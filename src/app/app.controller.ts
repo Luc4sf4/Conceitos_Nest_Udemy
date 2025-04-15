@@ -12,4 +12,9 @@ export class AppController {
   getHello(): string {
     return "Qualquer Coisa";
   }
+
+  @Get('exemplo')
+  exemplo(){
+    return 'outra rota';
+  }
 }
