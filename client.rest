@@ -10,3 +10,13 @@ GET {{baseUrl}}/home/hello/
 
 # @name Exemploderota
 GET {{baseUrl}}/home/exemplo/
+
+### ConceitosManualController 
+
+# @name ConceitosManualController 
+GET {{baseUrl}}/conceitos-manual/
+
+### ConceitosAutomaticoController 
+
+# @name ConceitosManualController 
+GET {{baseUrl}}/conceitos-automatico/

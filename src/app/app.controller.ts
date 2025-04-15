@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 // import { AppService } from './app.service';
 
-@Controller('home')//Decorator definindo a classe como uma controller, podendo ate mesmo definir os recursos dentro do Decorator
+@Controller('home') //Decorator definindo a classe como uma controller, podendo ate mesmo definir os recursos dentro do Decorator
 export class AppController {
   // constructor(private readonly appService: AppService) {}
 
@@ -10,11 +10,11 @@ export class AppController {
   //ficaria -> /home/hello
   @Get('hello')
   getHello(): string {
-    return "Qualquer Coisa";
+    return 'Qualquer Coisa';
   }
 
   @Get('exemplo')
-  exemplo(){
+  exemplo() {
     return 'outra rota';
   }
 }
