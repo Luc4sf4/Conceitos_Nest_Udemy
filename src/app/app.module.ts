@@ -6,8 +6,8 @@ import { ConceitosAutomaticoModule } from 'src/conceitos-automatico/conceitos-au
 
 @Module({
   imports: [ConceitosManualModule, ConceitosAutomaticoModule],
-  controllers: [AppController], //-> quem controla os request e as responses, onde pode ter as services utilizados para aplicar a logica de negocios
-  providers: [AppService], // -> usado para injetar dependencias
+  controllers: [AppController], //-> quem controla os request e as responses
+  providers: [AppService], // -> usado para injetar dependencias  onde pode ter as services utilizados para aplicar a logica de negocios
   exports: [],
 })
 export class AppModule {}
