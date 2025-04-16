@@ -28,3 +28,6 @@ GET {{baseUrl}}/recados/
 
 ###
 GET {{baseUrl}}/recados/123/
+
+###
+POST {{baseUrl}}/recados/
