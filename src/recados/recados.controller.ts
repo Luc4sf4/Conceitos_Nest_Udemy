@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
 @Controller('recados')//decorator de classe
 export class RecadosController {
@@ -14,9 +14,12 @@ export class RecadosController {
         return `Essa rota retorna o recado ID ${id}`;
     }
 
+    /*Podemos pedir pro Nest nos retornar somente uma chave do Arquivo JSON
+    Basta especificar dentro do decorator @Body, mas isso nao eh muito comum de se utilizar
+    */
     @Post()
-    create(){
-        return `Essa rota cria um recado`;
+    create(@Body('recado') body: any){
+        return body;
     }
 
 }
