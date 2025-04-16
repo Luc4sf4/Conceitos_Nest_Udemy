@@ -22,18 +22,28 @@ GET {{baseUrl}}/conceitos-manual/
 # @name ConceitosManualController 
 GET {{baseUrl}}/conceitos-automatico/
 
-###
+
 #Recados
+###Lista todos os recados
 GET {{baseUrl}}/recados/
 
-###
+### Lista 1 recado
 GET {{baseUrl}}/recados/123/
 
-###
+### Cria uma recado
 POST {{baseUrl}}/recados/
 Content-Type: application/json
 
 {
     "recado": "Este e o recado que eu estou enviando",
     "nova_chave": "outro valor"
+}
+
+### Atualiza um recado
+PATCH  {{baseUrl}}/recados/1/
+Content-Type: application/json
+
+{
+    "recado": "Este e o recado que eu estou enviando",
+    "atualizar": true
 }
