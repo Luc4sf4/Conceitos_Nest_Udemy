@@ -8,12 +8,12 @@ export class AppController {
   //Metodo da solicitacao -> Ler (Read) -> cRud
   //podemos definir o outro recurso(ou URL, ja que cada Decorator de route deixa uma "/" caso esteja vazio) dentro desse decorator
   //ficaria -> /home/hello
-  @Get('hello')
+ // @Get('hello')
   getHello(): string {
     return 'Qualquer Coisa';
   }
 
-  @Get('exemplo')
+  //@Get('exemplo')
   exemplo() {
     return this.appService.solucionaExemplo;
   }

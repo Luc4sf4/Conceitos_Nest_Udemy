@@ -7,6 +7,7 @@
 
 # @name AppControllerGetHello
 GET {{baseUrl}}/home/hello/
+###
 
 # @name Exemploderota
 GET {{baseUrl}}/home/exemplo/
@@ -20,3 +21,10 @@ GET {{baseUrl}}/conceitos-manual/
 
 # @name ConceitosManualController 
 GET {{baseUrl}}/conceitos-automatico/
+
+###
+#Recados
+GET {{baseUrl}}/recados/
+
+###
+GET {{baseUrl}}/recados/1/
