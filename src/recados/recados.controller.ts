@@ -1,15 +1,16 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
 
 @Controller('recados')//decorator de classe
 export class RecadosController {
 
+    @HttpCode(HttpStatus.NOT_FOUND)//Decorator para mudar o codigo HTTP, podendo usar os numeros ou o Enum do HttpStatus
     @Get()//decorator de metodo
     findAll(){
         return 'essa rota retorna todos os recados'
     }
 
     @Get(':id')
-    findONe(@Param('id') id: String)/*Decorator de funcao*/{
+    findONe(@Param('id') id: String /*Decorator de funcao*/){
         console.log(id);
         return `Essa rota retorna o recado ID ${id}`;
     }
