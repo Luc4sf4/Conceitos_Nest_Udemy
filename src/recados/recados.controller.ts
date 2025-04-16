@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 
 /**
  CRUD
@@ -41,6 +41,11 @@ export class RecadosController {
             id,
              body
         }
+    }
+
+    @Delete(':id')
+    remove(@Param('id') id: string){
+        return `Essa rota apaga o recaod com o id ${id}`;
     }
 
 }
