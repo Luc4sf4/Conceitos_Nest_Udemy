@@ -49,7 +49,7 @@ PATCH  {{baseUrl}}/recados/2/
 Content-Type: application/json
 
 {
-    "texto": "Novo Recado",
+    "texto": "ATUALIZA Recado",
     "de": "Joana",
     "para": "Joao",
     "lido": false,

@@ -11,6 +11,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
+import { CreateRecadoDto } from './dto/create-recado.dto';
+import { UpdateRecadoDto } from './dto/update-recado.dto';
 
 /**
  CRUD
@@ -24,11 +26,14 @@ import { RecadosService } from './recados.service';
 // Patch utilizado para atualizar dados de um recurso
 // Put utilizado para atualizar um recurso inteiro
 
+//DTO - Data Transfer Object -> Objeto de transferência de dados
+//DTO - Objeto simples -> Em nest usado para:  Validar / transformar dados
+
 @Controller('recados') //decorator de classe
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
 
-  //@HttpCode(HttpStatus.NOT_FOUND) Decorator para mudar o codigo HTTP, podendo usar os numeros ou o Enum do HttpStatus
+  //@HttpCode(HttpStatus.NOT_FOUND) Decorator para mudar o código HTTP, podendo usar os números ou o Enum do HttpStatus
   @Get() //decorator de metodo
   findAll(@Query() pagination: any) {
     const { limit = 10, offset = 10 } = pagination;
@@ -46,13 +51,13 @@ export class RecadosController {
     Basta especificar dentro do decorator @Body, mas isso nao eh muito comum de se utilizar
     */
   @Post()
-  create(@Body() body: any) {
-    return this.recadosService.create(body);
+  create(@Body() createRecadoDto: CreateRecadoDto) {
+    return this.recadosService.create(createRecadoDto);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: any) {
-    return this.recadosService.update(id, body);
+  update(@Param('id') id: string, @Body() updateRecadoDto: UpdateRecadoDto) {
+    return this.recadosService.update(id, updateRecadoDto);
   }
 
   @Delete(':id')

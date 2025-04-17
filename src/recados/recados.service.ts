@@ -1,8 +1,10 @@
+import { CreateRecadoDto } from './dto/create-recado.dto';
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { RecadoEntity } from './entities/recado.entity';
+import { UpdateRecadoDto } from './dto/update-recado.dto';
 
 @Injectable()
 export class RecadosService {
@@ -30,19 +32,21 @@ export class RecadosService {
     //throw new HttpException('Recado nao encontrado', HttpStatus.NOT_FOUND);
     this.throwNotFundError();
   }
-  create(body: any) {
+  create(createRecadoDto: CreateRecadoDto) {
     this.lastId++; //adiciona um numero da sequencia de id
     const id = this.lastId; //relaciona a constante id com o lastId
     const novoRecado = {
       id,
-      ...body,
+      ...createRecadoDto,
+      lido: false,
+      data: new Date(),
     }; //recebe o json desejado
     this.recados.push(novoRecado); //adiciona no array
 
     return novoRecado; //retorna mostrando o JSON
   }
 
-  update(id: string, body: any) {
+  update(id: string, updateRecadoDto: UpdateRecadoDto) {
     const recadoExistenteIndex = this.recados.findIndex(
       item => item.id === +id, //acha o index do recado que estamos tentando apagar
     );
@@ -52,7 +56,7 @@ export class RecadosService {
     const recadoExistente = this.recados[recadoExistenteIndex]; // encontra o recado que estamos procurando
     this.recados[recadoExistenteIndex] = {
       ...recadoExistente,
-      ...body,
+      ...updateRecadoDto,
     }; //troca as chaves do recado existente para o recado que desejamos atualizar
   }
   remove(id: string) {

@@ -1,8 +1,8 @@
 export class RecadoEntity {
-  id: number;
+  id: number; //create nao
   texto: string;
   de: string;
   para: string;
-  lido: boolean;
-  data: Date;
+  lido: boolean; //create nao
+  data: Date; // create nao
 }
