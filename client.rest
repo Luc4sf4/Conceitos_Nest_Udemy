@@ -31,28 +31,33 @@ GET {{baseUrl}}/recados/
 
 
 ### Lista 1 recado
-GET {{baseUrl}}/recados/123/
+GET {{baseUrl}}/recados/2/
 
 ### Cria uma recado
 POST {{baseUrl}}/recados/
 Content-Type: application/json
 
 {
-    "recado": "Este e o recado que eu estou enviando",
-    "nova_chave": "outro valor"
+    "texto": " 4 Novo Recado",
+    "de": "Joana",
+    "para": "Joao",
+    "lido": false,
+    "data": "2025-04-17T13:31:20.021Z"
 }
-
 ### Atualiza um recado
-PATCH  {{baseUrl}}/recados/1/
+PATCH  {{baseUrl}}/recados/2/
 Content-Type: application/json
 
 {
-    "recado": "Este e o recado que eu estou enviando",
-    "atualizar": true
+    "texto": "Novo Recado",
+    "de": "Joana",
+    "para": "Joao",
+    "lido": false,
+    "data": "2025-04-17T13:31:20.021Z"
 }
 
 ### Apaga um recado
-DELETE {{baseUrl}}/recados/1/
+DELETE {{baseUrl}}/recados/2/
 
 ### Query parameter sao usados nas urls depois de "?" 
 ###assim identificando qual e um parametro de Query parametyer

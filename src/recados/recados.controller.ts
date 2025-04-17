@@ -5,8 +5,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
-  HttpStatus,
   Param,
   Patch,
   Post,
@@ -33,15 +31,15 @@ export class RecadosController {
   //@HttpCode(HttpStatus.NOT_FOUND) Decorator para mudar o codigo HTTP, podendo usar os numeros ou o Enum do HttpStatus
   @Get() //decorator de metodo
   findAll(@Query() pagination: any) {
-   // const { limit = 10, offset = 10 } = pagination;
+    const { limit = 10, offset = 10 } = pagination;
     // return `essa rota retorna todos os recados Limit=${limit}, Offset=${offset}.`;
-    return this.recadosService.hello();
+    return this.recadosService.findAll();
   }
 
   @Get(':id')
   findONe(@Param('id') id: string /*Decorator de funcao*/) {
     console.log(id);
-    return `Essa rota retorna o recado ID ${id}`;
+    return this.recadosService.findOne(id);
   }
 
   /*Podemos pedir pro Nest nos retornar somente uma chave do Arquivo JSON
@@ -49,19 +47,16 @@ export class RecadosController {
     */
   @Post()
   create(@Body() body: any) {
-    return body;
+    return this.recadosService.create(body);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() body: any) {
-    return {
-      id,
-      body,
-    };
+    this.recadosService.update(id, body);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return `Essa rota apaga o recaod com o id ${id}`;
+    this.recadosService.remove(id);
   }
 }
