@@ -12,6 +12,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { RecadosService } from './recados.service';
 
 /**
  CRUD
@@ -27,11 +28,14 @@ import {
 
 @Controller('recados') //decorator de classe
 export class RecadosController {
-  @HttpCode(HttpStatus.NOT_FOUND) //Decorator para mudar o codigo HTTP, podendo usar os numeros ou o Enum do HttpStatus
+  constructor(private readonly recadosService: RecadosService) {}
+
+  //@HttpCode(HttpStatus.NOT_FOUND) Decorator para mudar o codigo HTTP, podendo usar os numeros ou o Enum do HttpStatus
   @Get() //decorator de metodo
   findAll(@Query() pagination: any) {
-    const { limit = 10, offset = 10 } = pagination;
-    return `essa rota retorna todos os recados Limit=${limit}, Offset=${offset}.`;
+   // const { limit = 10, offset = 10 } = pagination;
+    // return `essa rota retorna todos os recados Limit=${limit}, Offset=${offset}.`;
+    return this.recadosService.hello();
   }
 
   @Get(':id')
