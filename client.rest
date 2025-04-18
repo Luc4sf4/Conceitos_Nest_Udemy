@@ -3,7 +3,7 @@
 
 ### AppControllerGetHello
 
-### tipo de metodo -> url -> recurso da URL
+### tipo de método -> url -> recurso da URL
 
 # @name AppControllerGetHello
 GET {{baseUrl}}/home/hello/
@@ -26,9 +26,7 @@ Content-Type: application/json
 {
     "texto": "Novo Recado",
     "de": "Joana",
-    "para": "João",
-    "lido": false,
-    "data": "2025-04-17T13:31:20.021Z"
+    "para": "João"
 }
 ### Atualiza um recado
 PATCH  {{baseUrl}}/recados/2/
@@ -36,10 +34,11 @@ Content-Type: application/json
 
 {
     "texto": "ATUALIZA Recado",
+    "lido": true
 }
 
 ### Apaga um recado
 DELETE {{baseUrl}}/recados/2/
 
 ### Query parameter sao usados nas urls depois de "?" 
-###assim identificando qual e um parametro de Query parametyer
+###assim identificando qual e um parâmetro de Query parameter
