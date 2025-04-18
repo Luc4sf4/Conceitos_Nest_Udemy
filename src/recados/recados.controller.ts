@@ -1,14 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 import {
   Body,
   Controller,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
-  Query,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
 import { CreateRecadoDto } from './dto/create-recado.dto';
@@ -34,21 +32,20 @@ export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
 
   //@HttpCode(HttpStatus.NOT_FOUND) Decorator para mudar o código HTTP, podendo usar os números ou o Enum do HttpStatus
-  @Get() //decorator de metodo
-  findAll(@Query() pagination: any) {
-    const { limit = 10, offset = 10 } = pagination;
-    // return `essa rota retorna todos os recados Limit=${limit}, Offset=${offset}.`;
+  @Get() //decorator de método
+  findAll() {
     return this.recadosService.findAll();
   }
 
   @Get(':id')
-  findONe(@Param('id') id: string /*Decorator de funcao*/) {
+  findONe(@Param('id', ParseIntPipe) id: number /*Decorator de função*/) {
     console.log(id);
     return this.recadosService.findOne(id);
   }
 
   /*Podemos pedir pro Nest nos retornar somente uma chave do Arquivo JSON
-    Basta especificar dentro do decorator @Body, mas isso nao eh muito comum de se utilizar
+    Basta especificar dentro do decorator @Body, mas isso nao eh muito comum de 
+    se utilizar
     */
   @Post()
   create(@Body() createRecadoDto: CreateRecadoDto) {
@@ -61,7 +58,9 @@ export class RecadosController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(
+    @Param('id', ParseIntPipe /*transforma o string em inteiro */) id: number,
+  ) {
     return this.recadosService.remove(id);
   }
 }

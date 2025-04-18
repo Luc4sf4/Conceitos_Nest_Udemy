@@ -24,8 +24,8 @@ export class RecadosService {
   findAll() {
     return this.recados; //lista todos os recados, mais em especifico o array mencionado
   }
-  findOne(id: string) {
-    const recado = this.recados.find(item => item.id === +id); //procura por Id, informado no parametro e busca o json e monta pra gente
+  findOne(id: number) {
+    const recado = this.recados.find(item => item.id === +id); //procura por Id, informado no parâmetro e busca o json e monta pra gente
     if (recado) return recado;
     //throw new HttpException('Recado nao encontrado', HttpStatus.NOT_FOUND);
     this.throwNotFundError();
@@ -57,9 +57,9 @@ export class RecadosService {
       ...updateRecadoDto,
     }; //troca as chaves do recado existente para o recado que desejamos atualizar
   }
-  remove(id: string) {
+  remove(id: number) {
     const recadoExistenteIndex = this.recados.findIndex(
-      item => item.id === +id, //acha o index do recado que estamos tentando apagar
+      item => item.id === id, //acha o index do recado que estamos tentando apagar
     );
 
     if (recadoExistenteIndex < 0) {
