@@ -1,13 +1,13 @@
 import { CreateRecadoDto } from './dto/create-recado.dto';
 
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { RecadoEntity } from './entities/recado.entity';
+import { Recado } from './entities/recado.entity';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 
 @Injectable()
 export class RecadosService {
   private lastId = 1;
-  private recados: RecadoEntity[] = [
+  private recados: Recado[] = [
     {
       id: 1,
       texto: 'Este e um recado teste',
