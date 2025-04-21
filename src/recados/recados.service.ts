@@ -3,9 +3,23 @@ import { CreateRecadoDto } from './dto/create-recado.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Recado } from './entities/recado.entity';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+/*
+quando usar o async ? quando o método retornar uma promise, por exemplo?
+Operações com banco de dados, usando https/Apis externas, Delay, timeouts e etc
+
+*/
 
 @Injectable()
 export class RecadosService {
+  constructor(
+    //Cria o construtor
+    @InjectRepository(Recado) //injeção de dependência do repositório falando a entidade
+    private readonly recadoRepository: Repository<Recado>, //cira o recadoRepository passando o tipo Repository do TypeOrm passando o Recado da Entidade
+  ) {}
+
   private lastId = 1;
   private recados: Recado[] = [
     {
@@ -21,13 +35,30 @@ export class RecadosService {
   throwNotFundError() {
     throw new NotFoundException('Recado nao encontrado');
   }
-  findAll() {
-    return this.recados; //lista todos os recados, mais em especifico o array mencionado
+
+  /*
+    Nesse método iremos buscar todos os recados, o método find ele busca todos
+    os recados e retorna como se fosse um array dentro da variável recados
+    pra isso a método deve ser assíncrona.
+    Um método ou função async permite o uso de await dentro dele, o que 
+    significa que ele pode esperar pela resolução de Promises (como chamadas de
+    banco de dados, APIs externas, etc), sem bloquear a execução do restante do
+    código.
+    Em resumo, usamos `await` para esperar que a Promise com os dados seja resolvida
+    antes de retornar o resultado.
+  */
+  async findAll() {
+    const recados = await this.recadoRepository.find();
+    return recados;
   }
-  findOne(id: number) {
-    const recado = this.recados.find(item => item.id === +id); //procura por Id, informado no parâmetro e busca o json e monta pra gente
+
+  async findOne(id: number) {
+    const recado = await this.recadoRepository.findOne({
+      where: {
+        id,
+      },
+    });
     if (recado) return recado;
-    //throw new HttpException('Recado nao encontrado', HttpStatus.NOT_FOUND);
     this.throwNotFundError();
   }
   create(createRecadoDto: CreateRecadoDto) {
