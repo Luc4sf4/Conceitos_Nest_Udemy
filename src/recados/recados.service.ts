@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/await-thenable */
 import { CreateRecadoDto } from './dto/create-recado.dto';
-
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Recado } from './entities/recado.entity';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PessoasService } from 'src/pessoas/pessoas.service';
-
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 /*
 quando usar o async ? quando o método retornar uma promise, por exemplo?
 Operações com banco de dados, usando https/Apis externas, Delay, timeouts e etc
@@ -40,8 +38,11 @@ export class RecadosService {
     Em resumo, usamos `await` para esperar que a Promise com os dados seja 
     resolvida antes de retornar o resultado.
   */
-  async findAll() {
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
     const recados = await this.recadoRepository.find({
+      take: limit, // quantos registros serão exibidor (por pagina)
+      skip: offset, // quantos registros devem ser pulados (por pagina)
       relations: ['de', 'para'],
       order: {
         id: 'desc',
@@ -94,7 +95,7 @@ export class RecadosService {
       data: new Date(),
     }; //recebe o json desejado
     //adiciona no array
-    const recado = await this.recadoRepository.create(novoRecado);
+    const recado = this.recadoRepository.create(novoRecado);
     await this.recadoRepository.save(recado);
     return {
       ...recado,

@@ -7,10 +7,12 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 /**
  CRUD
@@ -33,8 +35,10 @@ export class RecadosController {
 
   //@HttpCode(HttpStatus.NOT_FOUND) Decorator para mudar o código HTTP, podendo usar os números ou o Enum do HttpStatus
   @Get() //decorator de método
-  findAll() {
-    return this.recadosService.findAll();
+  async findAll(@Query() paginationDto: PaginationDto) {
+    //const { limit = 10, offset= 0 } = paginationDto;
+    const recado = await this.recadosService.findAll(paginationDto);
+    return recado;
   }
 
   @Get(':id')
