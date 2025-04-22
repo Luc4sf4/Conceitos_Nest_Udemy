@@ -1,8 +1,10 @@
 import { IsEmail } from 'class-validator';
+import { Recado } from 'src/recados/entities/recado.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -27,4 +29,12 @@ export class Pessoa {
 
   @UpdateDateColumn()
   updatedAt?: Date;
+
+  //Uma pessoa enviou muitos recados
+  @OneToMany(() => Recado, recado => recado.de)
+  recadosEnviados: Recado[];
+
+  //Uma pessoa recebeu muitos recados
+  @OneToMany(() => Recado, recado => recado.para)
+  recadosRecebidos: Recado[];
 }
