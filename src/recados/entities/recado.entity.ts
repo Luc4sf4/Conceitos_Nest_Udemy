@@ -9,6 +9,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+//Cascade tem o efeito cascata, ou seja, se eu começo deletando de cima,
+//vai deletando o resto em efeito cascata, assim como o update
+
 @Entity()
 export class Recado {
   @PrimaryGeneratedColumn()
@@ -16,11 +19,15 @@ export class Recado {
   @Column({ type: 'varchar', length: 255 })
   texto: string;
 
-  @ManyToOne(() => Pessoa) //muitos recados de uma pessoa
-  @JoinColumn({ name: 'de' }) //especifica a coluna que armazena o ID de Pessoa
+  //muitos recados de uma pessoa
+  @ManyToOne(() => Pessoa, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  //especifica a coluna que armazena o ID de Pessoa que envia o recado
+  @JoinColumn({ name: 'de' })
   de: Pessoa;
 
-  @ManyToOne(() => Pessoa) //muitos recados para uma pessoa
+  //muitos recados para uma pessoa
+  @ManyToOne(() => Pessoa, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  //especifica a coluna que armazena o ID de pessoa que recebe o recado
   @JoinColumn({ name: 'para' })
   para: Pessoa;
 
