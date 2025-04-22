@@ -76,8 +76,8 @@ export class RecadosService {
         },
       },
     });
-    if (recado) return recado;
-    this.throwNotFundError();
+    if (!recado) throw new NotFoundException('Recado nao encontrado');
+    return recado;
   }
   async create(createRecadoDto: CreateRecadoDto) {
     const { deId, paraId } = createRecadoDto;
@@ -108,19 +108,13 @@ export class RecadosService {
   }
 
   async update(id: number, updateRecadoDto: UpdateRecadoDto) {
-    const partialUpdateRecadoDto = {
-      lido: updateRecadoDto?.lido,
-      text: updateRecadoDto?.texto,
-    }; //utilizando para selecionar quais campos em especifico que
-    //podemos alterar
-    const recado = await this.recadoRepository.preload({
-      //pre carrega os campos que iremos atualizar pegando ele com as
-      // atualizações que iremos receber
-      id,
-      ...partialUpdateRecadoDto,
-    });
-    if (!recado) return this.throwNotFundError(); //se recado nao existir
-    return this.recadoRepository.save(recado);
+    const recado = await this.findOne(id);
+
+    recado.texto = updateRecadoDto?.texto ?? recado.texto;
+    recado.lido = updateRecadoDto?.lido ?? recado.lido;
+
+    await this.recadoRepository.save(recado);
+    return recado;
   }
   async remove(id: number) {
     //procura o id na tabela
