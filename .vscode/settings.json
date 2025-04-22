@@ -26,10 +26,7 @@
   "editor.renderControlCharacters": true,
   "editor.tabSize": 2,
   "editor.renderLineHighlight": "gutter",
-  "editor.rulers": [
-    79,
-    120
-  ],
+  "editor.rulers": [79, 120],
   "editor.detectIndentation": true,
   "editor.snippetSuggestions": "bottom",
   "editor.wordBasedSuggestions": "off",
@@ -68,4 +65,5 @@
     "source.fixAll.eslint": "explicit",
     "source.fixAll": "explicit"
   },
+  "cSpell.words": ["postgres"]
 }

@@ -79,12 +79,15 @@ export class RecadosService {
     return this.recadoRepository.save(recado);
   }
   async remove(id: number) {
+    //procura o id na tabela
     const recado = await this.recadoRepository.findOneBy({
       id,
     });
-
+    // se nao achar o id, joga erro
     if (!recado) return this.throwNotFundError();
+    //faz com que seja removido na tabela
     await this.recadoRepository.remove(recado);
+    //retorna
     return recado;
   }
 }

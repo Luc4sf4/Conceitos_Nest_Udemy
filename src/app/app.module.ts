@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RecadosModule } from 'src/recados/recados.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { PessoasModule } from 'src/pessoas/pessoas.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: true, //sincroniza com o BD. nao deve ser usado em produção
     }),
     RecadosModule,
+    PessoasModule,
   ],
   controllers: [AppController], //-> quem controla os request e as responses
   providers: [AppService], // -> usado para injetar dependências  onde pode ter as services utilizados para aplicar a logica de negócios
