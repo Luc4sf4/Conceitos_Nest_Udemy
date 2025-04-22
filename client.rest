@@ -42,3 +42,35 @@ DELETE {{baseUrl}}/recados/2/
 
 ### Query parameter sao usados nas urls depois de "?" 
 ###assim identificando qual e um parâmetro de Query parameter
+
+
+#Pessoas
+###Lista todas as Pessoas
+GET {{baseUrl}}/pessoa/
+?limit=10
+&offset=10
+
+
+### Lista 1 pessoa
+GET {{baseUrl}}/pessoa/2/
+
+### Cria uma pessoa
+POST {{baseUrl}}/pessoas/
+Content-Type: application/json
+
+{
+    "email": "email@example.com",
+    "senha": "123456",
+    "name": "Lucas"
+}
+### Atualiza uma pessoa
+PATCH  {{baseUrl}}/pessoa/2/
+Content-Type: application/json
+
+{
+    "texto": "ATUALIZA Recado",
+    "lido": true
+}
+
+### Apaga uma pessoa
+DELETE {{baseUrl}}/pessoa/2/
