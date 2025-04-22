@@ -46,30 +46,30 @@ DELETE {{baseUrl}}/recados/2/
 
 #Pessoas
 ###Lista todas as Pessoas
-GET {{baseUrl}}/pessoa/
+GET {{baseUrl}}/pessoas/
 ?limit=10
 &offset=10
 
 
 ### Lista 1 pessoa
-GET {{baseUrl}}/pessoa/2/
+GET {{baseUrl}}/pessoas/6/
 
 ### Cria uma pessoa
 POST {{baseUrl}}/pessoas/
 Content-Type: application/json
 
 {
-    "email": "email@example.com",
+    "email": "email2@example.com",
     "senha": "123456",
     "name": "Lucas"
 }
 ### Atualiza uma pessoa
-PATCH  {{baseUrl}}/pessoa/2/
+PATCH  {{baseUrl}}/pessoas/4/
 Content-Type: application/json
 
 {
-    "texto": "ATUALIZA Recado",
-    "lido": true
+    "name": "Lukas",
+    "senha": "1234567"
 }
 
 ### Apaga uma pessoa

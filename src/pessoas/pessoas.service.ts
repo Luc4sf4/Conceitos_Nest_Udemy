@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Pessoa } from './entities/pessoa.entity';
-import { ConflictException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,7 +18,7 @@ export class PessoasService {
   ) {}
 
   async create(createPessoaDto: CreatePessoaDto) {
-    try{ 
+    try {
       const novaPessoa = {
         nome: createPessoaDto.name,
         passwordHash: createPessoaDto.senha,
@@ -39,8 +43,20 @@ export class PessoasService {
     return `This action returns a #${id} pessoa`;
   }
 
-  update(id: number, updatePessoaDto: UpdatePessoaDto) {
-    return `This action updates a #${id} pessoa`;
+  async update(id: number, updatePessoaDto: UpdatePessoaDto) {
+    const dadosPessoa = {
+      nome: updatePessoaDto?.name,
+      passwordHash: updatePessoaDto?.senha,
+    };
+
+    const pessoa = await this.pessoaRepository.preload({
+      id,
+      ...dadosPessoa,
+    });
+
+    if (!pessoa) throw new NotFoundException('Pessoa nao encontrada ');
+
+    return this.pessoaRepository.save(pessoa);
   }
 
   async remove(id: number) {
