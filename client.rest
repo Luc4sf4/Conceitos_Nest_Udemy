@@ -25,8 +25,8 @@ Content-Type: application/json
 
 {
     "texto": "Novo Recado",
-    "de": "Joana",
-    "para": "João"
+    "deId": 4,
+    "paraId": 6
 }
 ### Atualiza um recado
 PATCH  {{baseUrl}}/recados/2/

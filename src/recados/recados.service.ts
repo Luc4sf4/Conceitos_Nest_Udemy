@@ -41,7 +41,22 @@ export class RecadosService {
     resolvida antes de retornar o resultado.
   */
   async findAll() {
-    const recados = await this.recadoRepository.find();
+    const recados = await this.recadoRepository.find({
+      relations: ['de', 'para'],
+      order: {
+        id: 'desc',
+      },
+      select: {
+        de: {
+          id: true,
+          nome: true,
+        },
+        para: {
+          id: true,
+          nome: true,
+        },
+      },
+    });
     return recados;
   }
 
@@ -50,22 +65,46 @@ export class RecadosService {
       where: {
         id,
       },
+      select: {
+        de: {
+          id: true,
+          nome: true,
+        },
+        para: {
+          id: true,
+          nome: true,
+        },
+      },
     });
     if (recado) return recado;
     this.throwNotFundError();
   }
   async create(createRecadoDto: CreateRecadoDto) {
+    const { deId, paraId } = createRecadoDto;
     //Encontrar a pessoa que esta criando o recado
+    const de = await this.pessoasService.findOne(deId);
     //Encontrar a pessoa que esta recebendo o recado
+    const para = await this.pessoasService.findOne(paraId);
 
     const novoRecado = {
-      ...createRecadoDto,
+      texto: createRecadoDto.texto,
+      de,
+      para,
       lido: false,
       data: new Date(),
     }; //recebe o json desejado
     //adiciona no array
     const recado = await this.recadoRepository.create(novoRecado);
-    return this.recadoRepository.save(recado); //retorna mostrando o JSON
+    await this.recadoRepository.save(recado);
+    return {
+      ...recado,
+      de: {
+        id: recado.de.id,
+      },
+      para: {
+        para: recado.para.id,
+      },
+    }; //retorna mostrando o JSON com os campos especificados
   }
 
   async update(id: number, updateRecadoDto: UpdateRecadoDto) {
