@@ -6,6 +6,7 @@ import { Recado } from './entities/recado.entity';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PessoasService } from 'src/pessoas/pessoas.service';
 
 /*
 quando usar o async ? quando o método retornar uma promise, por exemplo?
@@ -22,6 +23,7 @@ export class RecadosService {
     //cira o recadoRepository passando o tipo Repository do TypeOrm passando
     //o Recado da Entidade
     private readonly recadoRepository: Repository<Recado>,
+    private readonly pessoasService: PessoasService,
   ) {}
   throwNotFundError() {
     throw new NotFoundException('Recado nao encontrado');
@@ -53,6 +55,9 @@ export class RecadosService {
     this.throwNotFundError();
   }
   async create(createRecadoDto: CreateRecadoDto) {
+    //Encontrar a pessoa que esta criando o recado
+    //Encontrar a pessoa que esta recebendo o recado
+
     const novoRecado = {
       ...createRecadoDto,
       lido: false,
