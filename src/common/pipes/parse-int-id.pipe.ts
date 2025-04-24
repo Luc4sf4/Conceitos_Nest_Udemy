@@ -15,7 +15,7 @@ export class ParseIntIdPipe implements PipeTransform {
     //transformando os dados
     const parsedValue = Number(value);
 
-    //validando se os dados vieram de uma string numerica
+    //validando se os dados vieram de uma string numérica
     if (isNaN(parsedValue)) {
       throw new BadRequestException(
         'ParseIntIdPipe espera uma string numérica',

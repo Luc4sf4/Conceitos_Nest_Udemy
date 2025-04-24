@@ -4,16 +4,16 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
-  UsePipes,
+  UseInterceptors,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
 
 /**
  CRUD
@@ -31,12 +31,12 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 //DTO - Objeto simples -> Em nest usado para:  Validar / transformar dados
 
 @Controller('recados') //decorator de classe
-@UsePipes(ParseIntPipe)
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
 
   //@HttpCode(HttpStatus.NOT_FOUND) Decorator para mudar o código HTTP, podendo usar os números ou o Enum do HttpStatus
   @Get() //decorator de método
+  @UseInterceptors(AddHeaderInterceptor)
   async findAll(@Query() paginationDto: PaginationDto) {
     //const { limit = 10, offset= 0 } = paginationDto;
     const recado = await this.recadosService.findAll(paginationDto);
