@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  UsePipes,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
 import { CreateRecadoDto } from './dto/create-recado.dto';
@@ -30,6 +31,7 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 //DTO - Objeto simples -> Em nest usado para:  Validar / transformar dados
 
 @Controller('recados') //decorator de classe
+@UsePipes(ParseIntPipe)
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
 
@@ -42,7 +44,7 @@ export class RecadosController {
   }
 
   @Get(':id')
-  findONe(@Param('id', ParseIntPipe) id: number /*Decorator de função*/) {
+  findONe(@Param('id') id: number /*Decorator de função*/) {
     console.log(id);
     return this.recadosService.findOne(id);
   }
@@ -62,9 +64,7 @@ export class RecadosController {
   }
 
   @Delete(':id')
-  remove(
-    @Param('id', ParseIntPipe /*transforma o string em inteiro */) id: number,
-  ) {
+  remove(@Param('id') id: number) {
     return this.recadosService.remove(id);
   }
 }
