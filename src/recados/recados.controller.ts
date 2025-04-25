@@ -33,21 +33,18 @@ import { SimpleCacheInterceptor } from 'src/common/interceptors/simple-cache.int
 //DTO - Data Transfer Object -> Objeto de transferência de dados
 //DTO - Objeto simples -> Em nest usado para:  Validar / transformar dados
 
-@UseInterceptors(SimpleCacheInterceptor)
+
 @Controller('recados') //decorator de classe
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
 
   //@HttpCode(HttpStatus.NOT_FOUND) Decorator para mudar o código HTTP, podendo usar os números ou o Enum do HttpStatus
   @Get() //decorator de método
-  @UseInterceptors(TimingConnectionInterceptor, ErrorHandlingInterceptor)
   async findAll(@Query() paginationDto: PaginationDto) {
     //const { limit = 10, offset= 0 } = paginationDto;
     const recado = await this.recadosService.findAll(paginationDto);
     return recado;
   }
-
-  @UseInterceptors(AddHeaderInterceptor, ErrorHandlingInterceptor)
   @Get(':id')
   findONe(@Param('id') id: number /*Decorator de função*/) {
     console.log(id);
