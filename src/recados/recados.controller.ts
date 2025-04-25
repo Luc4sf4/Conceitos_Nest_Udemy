@@ -15,6 +15,7 @@ import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
 import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-connection.interceptor';
+import { ErrorHandlingInterceptor } from 'src/common/interceptors/error-handling.interceptor';
 
 /**
  CRUD
@@ -37,14 +38,14 @@ export class RecadosController {
 
   //@HttpCode(HttpStatus.NOT_FOUND) Decorator para mudar o código HTTP, podendo usar os números ou o Enum do HttpStatus
   @Get() //decorator de método
-  @UseInterceptors(TimingConnectionInterceptor)
+  @UseInterceptors(TimingConnectionInterceptor, ErrorHandlingInterceptor)
   async findAll(@Query() paginationDto: PaginationDto) {
     //const { limit = 10, offset= 0 } = paginationDto;
     const recado = await this.recadosService.findAll(paginationDto);
     return recado;
   }
 
-  @UseInterceptors(AddHeaderInterceptor)
+  @UseInterceptors(AddHeaderInterceptor, ErrorHandlingInterceptor)
   @Get(':id')
   findONe(@Param('id') id: number /*Decorator de função*/) {
     console.log(id);
