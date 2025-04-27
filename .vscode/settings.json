@@ -18,7 +18,7 @@
   "workbench.fontAliasing": "antialiased",
   "workbench.layoutControl.enabled": false,
   // Explorer
-  "explorer.confirmDelete": true,
+  "explorer.confirmDelete": false,
   "explorer.compactFolders": false,
   // Editor and breadcrumbs
   "breadcrumbs.enabled": true,
