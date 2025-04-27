@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
@@ -14,6 +15,7 @@ import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { AuthTokenInterceptor } from 'src/common/interceptors/auth-token.interceptor copy';
+import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
 
 /**
  CRUD
@@ -30,6 +32,7 @@ import { AuthTokenInterceptor } from 'src/common/interceptors/auth-token.interce
 //DTO - Data Transfer Object -> Objeto de transferência de dados
 //DTO - Objeto simples -> Em nest usado para:  Validar / transformar dados
 
+@UseGuards(IsAdminGuard)
 @Controller('recados') //decorator de classe
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
