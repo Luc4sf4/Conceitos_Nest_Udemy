@@ -1,3 +1,4 @@
+import { RecadosUtils } from './recado.utils';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Recado } from './entities/recado.entity';
@@ -12,7 +13,17 @@ Operações com banco de dados, usando https/Apis externas, Delay, timeouts e et
 
 */
 
-@Injectable()
+/**
+ * Instanciar uma classe: você faz tudo na mão. O Nest só olha,
+ *  não participa, não ajuda, não injeta, não controla ciclo de vida.
+
+  Injeção de dependência: você só declara o que precisa, e o 
+  Nest faz todo o trampo pesado por trás — resolve dependências, cuida do escopo,
+  facilita testes, e integra tudo com o restante do ecossistema 
+  (pipes, interceptors, guards, filters...). 
+ */
+
+@Injectable() //qualquer classe que tem esta annotations, pode participar do sistema de injeção de dependência
 export class RecadosService {
   //Cria o construtor
   constructor(
@@ -22,6 +33,7 @@ export class RecadosService {
     //o Recado da Entidade
     private readonly recadoRepository: Repository<Recado>,
     private readonly pessoasService: PessoasService,
+    private readonly recadosUtils: RecadosUtils,
   ) {}
   throwNotFundError() {
     throw new NotFoundException('Recado nao encontrado');
