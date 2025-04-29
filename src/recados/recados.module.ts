@@ -10,5 +10,11 @@ import { RecadosUtils } from './recado.utils';
   imports: [TypeOrmModule.forFeature([Recado]), PessoasModule],
   controllers: [RecadosController],
   providers: [RecadosService, RecadosUtils],
+  exports: [
+    {
+      provide: RecadosUtils,
+      useClass: RecadosUtils,
+    },
+  ],
 })
 export class RecadosModule {}

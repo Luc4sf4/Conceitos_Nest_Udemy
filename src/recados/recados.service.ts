@@ -1,4 +1,4 @@
-import { RecadosUtils } from './recado.utils';
+
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Recado } from './entities/recado.entity';
@@ -33,7 +33,6 @@ export class RecadosService {
     //o Recado da Entidade
     private readonly recadoRepository: Repository<Recado>,
     private readonly pessoasService: PessoasService,
-    private readonly recadosUtils: RecadosUtils,
   ) {}
   throwNotFundError() {
     throw new NotFoundException('Recado nao encontrado');

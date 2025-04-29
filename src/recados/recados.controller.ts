@@ -12,6 +12,7 @@ import { RecadosService } from './recados.service';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { RecadosUtils } from './recado.utils';
 
 /**
  CRUD
@@ -30,12 +31,15 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('recados') //decorator de classe
 export class RecadosController {
-  constructor(private readonly recadosService: RecadosService) {}
+  constructor(
+    private readonly recadosService: RecadosService,
+    private readonly recadosUtils: RecadosUtils,
+  ) {}
 
   //@HttpCode(HttpStatus.NOT_FOUND) Decorator para mudar o código HTTP, podendo usar os números ou o Enum do HttpStatus
   @Get() //decorator de método
   async findAll(@Query() paginationDto: PaginationDto) {
-    //const { limit = 10, offset= 0 } = paginationDto;
+    console.log(this.recadosUtils.inverteString('Lucas'));
     const recado = await this.recadosService.findAll(paginationDto);
     return recado;
   }
