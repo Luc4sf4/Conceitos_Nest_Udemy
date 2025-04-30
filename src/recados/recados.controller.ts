@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Inject,
   Param,
   Patch,
   Post,
@@ -13,6 +14,7 @@ import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { RecadosUtils } from './recado.utils';
+import { SERVER_NAME } from 'src/common/constants/server-name.constant';
 
 /**
  CRUD
@@ -34,12 +36,14 @@ export class RecadosController {
   constructor(
     private readonly recadosService: RecadosService,
     private readonly recadosUtils: RecadosUtils,
+    @Inject(SERVER_NAME)
+    private readonly serverName: string,
   ) {}
 
   //@HttpCode(HttpStatus.NOT_FOUND) Decorator para mudar o código HTTP, podendo usar os números ou o Enum do HttpStatus
   @Get() //decorator de método
   async findAll(@Query() paginationDto: PaginationDto) {
-    console.log(this.recadosUtils.inverteString('Lucas'));
+    console.log(this.serverName);
     const recado = await this.recadosService.findAll(paginationDto);
     return recado;
   }
