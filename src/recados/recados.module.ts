@@ -10,6 +10,7 @@ import {
   ONLY_LOWERCASE_LETTERS_REGEX,
   REMOVE_SPACES_REGEX,
 } from './recados.constant';
+import { resolve } from 'path';
 
 // possibilidade de usar o factory, ja que e uma função
 // const createRegexClass = () => {
@@ -39,7 +40,12 @@ import {
     {
       provide: ONLY_LOWERCASE_LETTERS_REGEX, // token
       //retorna uma função que retorna o que voce quer
-      useFactory: (regexFactory: RegexFactory) => {
+      useFactory: async (regexFactory: RegexFactory) => {
+        //espera alguma coisa acontecer
+        console.log('Esperando a promise abaixo ser resolvida. ');
+        await new Promise(resolve => setTimeout(resolve, 300));
+        console.log('Ponto a promise foi resolvida. ');
+
         //Meu código/logica
         return regexFactory.create('OnlyLowercaseLettersRegex');
       },
