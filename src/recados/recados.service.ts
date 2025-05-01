@@ -1,5 +1,5 @@
 import { CreateRecadoDto } from './dto/create-recado.dto';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { Recado } from './entities/recado.entity';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,7 +22,11 @@ Operações com banco de dados, usando https/Apis externas, Delay, timeouts e et
   (pipes, interceptors, guards, filters...). 
  */
 
-@Injectable() //qualquer classe que tem esta annotations, pode participar do sistema de injeção de dependência
+//Scope.DEFAULT -> o provider em questão e um singleton (quando a aplicação inicia ela inicia e mantém a instancia)
+//Scope.REQUEST -> o provider em questão e instanciado a cada requisição (inicia a cada chamado)
+//Scope.TRANSIENT -> Criada uma instancia do provider para cada classe que injetar esse provider
+
+@Injectable({ scope: Scope.DEFAULT }) //qualquer classe que tem esta annotations, pode participar do sistema de injeção de dependência
 export class RecadosService {
   //Cria o construtor
   constructor(
