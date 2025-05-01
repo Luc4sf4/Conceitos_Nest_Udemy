@@ -7,7 +7,10 @@ import { PessoasModule } from 'src/pessoas/pessoas.module';
 import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
-    ConfigModule.forRoot(), // por padrão carrega o arquivo .env
+    ConfigModule.forRoot({
+      // envFilePath: ['env/.env'], pode ter vários caminhos ate uma array de strings, pode ter ate pastas
+      //ignoreEnvFile: true,  vem falso como padrão
+    }), // por padrão carrega o arquivo .env
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as 'postgres',
       host: process.env.DATABASE_HOST,
