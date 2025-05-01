@@ -6,11 +6,7 @@ import { PessoasModule } from 'src/pessoas/pessoas.module';
 import { RecadosUtils } from './recado.utils';
 import { RecadosService } from './recados.service';
 import { RegexFactory } from 'src/common/regex/regex.factory';
-import {
-  ONLY_LOWERCASE_LETTERS_REGEX,
-  REMOVE_SPACES_REGEX,
-} from './recados.constant';
-import { resolve } from 'path';
+// import { MyDynamicModule } from 'src/my-dynamic/my-dynamic.module';
 
 // possibilidade de usar o factory, ja que e uma função
 // const createRegexClass = () => {
@@ -21,38 +17,13 @@ import { resolve } from 'path';
   imports: [
     TypeOrmModule.forFeature([Recado]),
     forwardRef(() => PessoasModule),
+    // MyDynamicModule.register({
+    //   apiKey: 'Aqui vem a API Key',
+    //   apiUrl: 'http://blablabla.blag',
+    // }),
   ],
   controllers: [RecadosController],
-  providers: [
-    RecadosService,
-    RecadosUtils,
-    RegexFactory,
-    {
-      provide: REMOVE_SPACES_REGEX, // token
-      //retorna uma função que retorna o que voce quer
-      useFactory: (regexFactory: RegexFactory) => {
-        //Meu código/logica
-        return regexFactory.create('RemoveSpacesRegex');
-      },
-      //Factory
-      inject: [RegexFactory], // injetando na factory na ordem
-    },
-    {
-      provide: ONLY_LOWERCASE_LETTERS_REGEX, // token
-      //retorna uma função que retorna o que voce quer
-      useFactory: async (regexFactory: RegexFactory) => {
-        //espera alguma coisa acontecer
-        console.log('Esperando a promise abaixo ser resolvida. ');
-        await new Promise(resolve => setTimeout(resolve, 300));
-        console.log('Ponto a promise foi resolvida. ');
-
-        //Meu código/logica
-        return regexFactory.create('OnlyLowercaseLettersRegex');
-      },
-      //Factory
-      inject: [RegexFactory], // injetando na factory na ordem
-    },
-  ],
+  providers: [RecadosService, RecadosUtils, RegexFactory],
   exports: [RecadosUtils],
 })
 export class RecadosModule {}
