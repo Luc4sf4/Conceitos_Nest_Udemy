@@ -28,6 +28,7 @@ Operações com banco de dados, usando https/Apis externas, Delay, timeouts e et
 
 @Injectable({ scope: Scope.DEFAULT }) //qualquer classe que tem esta annotations, pode participar do sistema de injeção de dependência
 export class RecadosService {
+  private count = 0;
   //Cria o construtor
   constructor(
     //injeção de dependência do repositório falando a entidade
@@ -36,7 +37,10 @@ export class RecadosService {
     //o Recado da Entidade
     private readonly recadoRepository: Repository<Recado>,
     private readonly pessoasService: PessoasService,
-  ) {}
+  ) {
+    this.count++;
+    console.log(`RecadosService foi iniciado ${this.count} vezes`);
+  }
   throwNotFundError() {
     throw new NotFoundException('Recado nao encontrado');
   }
