@@ -1,3 +1,3 @@
-export interface RegexProtocol {
+export interface RegexInterface {
   execute(str: string): string;
 }

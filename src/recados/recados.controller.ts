@@ -13,13 +13,8 @@ import { RecadosService } from './recados.service';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { RecadosUtils } from './recado.utils';
-import {
-  ONLY_LOWERCASE_LETTERS_REGEX,
-  REMOVE_SPACES_REGEX,
-  SERVER_NAME,
-} from 'src/recados/recados.constant';
-import { RegexProtocol } from 'src/common/regex/regex.protocol';
+import { REMOVE_SPACES_REGEX, SERVER_NAME } from 'src/recados/recados.constant';
+import { RemoveSpacesRegex } from 'src/common/regex/remove-spaces.regex';
 
 /**
  CRUD
@@ -40,21 +35,16 @@ import { RegexProtocol } from 'src/common/regex/regex.protocol';
 export class RecadosController {
   constructor(
     private readonly recadosService: RecadosService,
-    private readonly recadosUtils: RecadosUtils,
     @Inject(SERVER_NAME)
     private readonly serverName: string,
-    @Inject(REMOVE_SPACES_REGEX) //usando interface
-    private readonly removeSpacesRegex: RegexProtocol,
-    @Inject(ONLY_LOWERCASE_LETTERS_REGEX) //usando interface
-    private readonly onlyLowercasesLetters: RegexProtocol,
+    @Inject(REMOVE_SPACES_REGEX)
+    private readonly removeSpacesRegex: RemoveSpacesRegex,
   ) {}
 
   //@HttpCode(HttpStatus.NOT_FOUND) Decorator para mudar o código HTTP, podendo usar os números ou o Enum do HttpStatus
   @Get() //decorator de método
   async findAll(@Query() paginationDto: PaginationDto) {
-    console.log(this.removeSpacesRegex.execute(this.serverName));
-    console.log(this.onlyLowercasesLetters.execute(this.serverName));
-    console.log(this.serverName);
+    console.log(this.removeSpacesRegex.execute('REMOVE OS ESPAÇOS'));
     const recado = await this.recadosService.findAll(paginationDto);
     return recado;
   }

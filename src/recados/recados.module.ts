@@ -1,18 +1,21 @@
-/* eslint-disable no-constant-condition */
 import { Module, forwardRef } from '@nestjs/common';
 import { RecadosController } from './recados.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Recado } from './entities/recado.entity';
 import { PessoasModule } from 'src/pessoas/pessoas.module';
-import { RecadosUtils, RecadosUtilsMock } from './recado.utils';
+import { RecadosUtils } from './recado.utils';
+import { RecadosService } from './recados.service';
+import { RegexFactory } from 'src/common/regex/regex.factory';
 import {
   ONLY_LOWERCASE_LETTERS_REGEX,
   REMOVE_SPACES_REGEX,
-  SERVER_NAME,
-} from 'src/recados/recados.constant';
-import { RemoveSpacesRegex } from 'src/common/regex/remove-spaces.regex';
-import { OnlyLowercasesLettersRegex } from 'src/common/regex/only-lowercase-letters.regex copy';
+} from './recados.constant';
 
+// possibilidade de usar o factory, ja que e uma função
+// const createRegexClass = () => {
+//   //Meu código/logica
+//    return new RemoveSpacesRegex();
+// };
 @Module({
   imports: [
     TypeOrmModule.forFeature([Recado]),
@@ -20,32 +23,30 @@ import { OnlyLowercasesLettersRegex } from 'src/common/regex/only-lowercase-lett
   ],
   controllers: [RecadosController],
   providers: [
+    RecadosService,
+    RecadosUtils,
+    RegexFactory,
     {
-      provide: RecadosUtils, // Token
-      useValue: new RecadosUtilsMock(), // Valor a ser usado
-      //useClass: RecadosUtils,
-      //Geralmente o mock e usado para se escrever testes
+      provide: REMOVE_SPACES_REGEX, // token
+      //retorna uma função que retorna o que voce quer
+      useFactory: (regexFactory: RegexFactory) => {
+        //Meu código/logica
+        return regexFactory.create('RemoveSpacesRegex');
+      },
+      //Factory
+      inject: [RegexFactory], // injetando na factory na ordem
     },
     {
-      provide: SERVER_NAME,
-      useValue: 'My name is NestJS',
-    },
-    // {
-    //   // nao pode usar provide para interface, por isso usamos a classe abstrata
-    //   provide: RegexProtocol,
-    //   // 1 === 1 -> true
-    //   // 1 !== 1 -> false
-    //   useClass: 1 === 1 ? RemoveSpacesRegex : OnlyLowercasesLettersRegex,
-    // },
-    {
-      provide: ONLY_LOWERCASE_LETTERS_REGEX,
-      useClass: OnlyLowercasesLettersRegex,
-    },
-    {
-      provide: REMOVE_SPACES_REGEX,
-      useClass: RemoveSpacesRegex,
+      provide: ONLY_LOWERCASE_LETTERS_REGEX, // token
+      //retorna uma função que retorna o que voce quer
+      useFactory: (regexFactory: RegexFactory) => {
+        //Meu código/logica
+        return regexFactory.create('OnlyLowercaseLettersRegex');
+      },
+      //Factory
+      inject: [RegexFactory], // injetando na factory na ordem
     },
   ],
-  exports: [RecadosUtils, SERVER_NAME], //Caso a classe e o token tiverem o mesmo nome se utiliza assim
+  exports: [RecadosUtils],
 })
 export class RecadosModule {}
