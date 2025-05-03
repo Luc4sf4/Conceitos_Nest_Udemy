@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { Recado } from './entities/recado.entity';
@@ -6,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PessoasService } from 'src/pessoas/pessoas.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { ConfigService } from '@nestjs/config';
 /*
 quando usar o async ? quando o método retornar uma promise, por exemplo?
 Operações com banco de dados, usando https/Apis externas, Delay, timeouts e etc
@@ -37,9 +39,13 @@ export class RecadosService {
     //o Recado da Entidade
     private readonly recadoRepository: Repository<Recado>,
     private readonly pessoasService: PessoasService,
+    private readonly configService: ConfigService /*<{
+      DATABASE_USERNAME: string;
+    }>*/,
   ) {
-    this.count++;
-    console.log(`RecadosService foi iniciado ${this.count} vezes`);
+    const databaseUsername =
+      this.configService.get<string>('DATABASE_USERNAME');
+    console.log({ databaseUsername });
   }
   throwNotFundError() {
     throw new NotFoundException('Recado nao encontrado');

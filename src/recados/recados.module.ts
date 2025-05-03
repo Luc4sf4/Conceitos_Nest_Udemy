@@ -6,6 +6,7 @@ import { PessoasModule } from 'src/pessoas/pessoas.module';
 import { RecadosUtils } from './recado.utils';
 import { RecadosService } from './recados.service';
 import { RegexFactory } from 'src/common/regex/regex.factory';
+import { ConfigModule } from '@nestjs/config';
 // import { MyDynamicModule } from 'src/my-dynamic/my-dynamic.module';
 
 // possibilidade de usar o factory, ja que e uma função
@@ -15,6 +16,7 @@ import { RegexFactory } from 'src/common/regex/regex.factory';
 // };
 @Module({
   imports: [
+    ConfigModule,
     TypeOrmModule.forFeature([Recado]),
     forwardRef(() => PessoasModule),
     // MyDynamicModule.register({
