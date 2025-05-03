@@ -1,12 +1,13 @@
 import { CreateRecadoDto } from './dto/create-recado.dto';
-import { Injectable, NotFoundException, Scope } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { Recado } from './entities/recado.entity';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PessoasService } from 'src/pessoas/pessoas.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { ConfigService } from '@nestjs/config';
+import { ConfigType } from '@nestjs/config';
+import recadosConfig from './recados.config';
 /*
 quando usar o async ? quando o método retornar uma promise, por exemplo?
 Operações com banco de dados, usando https/Apis externas, Delay, timeouts e etc
@@ -16,7 +17,6 @@ Operações com banco de dados, usando https/Apis externas, Delay, timeouts e et
 /**
  * Instanciar uma classe: você faz tudo na mão. O Nest só olha,
  *  não participa, não ajuda, não injeta, não controla ciclo de vida.
-
   Injeção de dependência: você só declara o que precisa, e o 
   Nest faz todo o trampo pesado por trás — resolve dependências, cuida do escopo,
   facilita testes, e integra tudo com o restante do ecossistema 
@@ -38,13 +38,10 @@ export class RecadosService {
     //o Recado da Entidade
     private readonly recadoRepository: Repository<Recado>,
     private readonly pessoasService: PessoasService,
-    private readonly configService: ConfigService /*<{
-      DATABASE_USERNAME: string;
-    }>*/,
+    @Inject(recadosConfig.KEY)
+    private readonly recadosConfiguratios: ConfigType<typeof recadosConfig>,
   ) {
-    const databaseUsername =
-      this.configService.get<string>('DATABASE_USERNAME');
-    console.log({ databaseUsername });
+    console.log(recadosConfiguratios);
   }
   throwNotFundError() {
     throw new NotFoundException('Recado nao encontrado');
