@@ -19,5 +19,5 @@ export class CreatePessoaDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(5)
-  readonly senha?: string;
+  readonly senha: string;
 }
