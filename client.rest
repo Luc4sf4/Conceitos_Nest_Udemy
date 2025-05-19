@@ -59,7 +59,7 @@ POST {{baseUrl}}/pessoas/
 Content-Type: application/json
 
 {
-    "email": "email2@example.com",
+    "email": "lucas@email.com",
     "senha": "123456",
     "name": "Lucas"
 }
