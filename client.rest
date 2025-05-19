@@ -24,7 +24,7 @@ POST {{baseUrl}}/recados/
 Content-Type: application/json
 
 {
-    "texto": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "texto": "Um recado apenas",
     "deId": 4,
     "paraId": 6
 }
@@ -74,3 +74,15 @@ Content-Type: application/json
 
 ### Apaga uma pessoa
 DELETE {{baseUrl}}/pessoa/2/
+
+
+#Auth
+###Lista todas as Pessoas
+POST {{baseUrl}}/auth/
+Content-Type: application/json
+
+{
+    "email": "lucas@email.com",
+    "password": "123456"
+}
+
