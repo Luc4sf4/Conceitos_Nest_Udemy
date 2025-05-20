@@ -1,5 +1,6 @@
 
 @baseUrl = http://localhost:3000
+@authToken = {{authenticate.response.body.accessToken}}
 
 ### AppControllerGetHello
 
@@ -14,7 +15,7 @@ GET {{baseUrl}}/home/hello/
 GET {{baseUrl}}/recados/
 ?limit=10
 &offset=10
-Authorization: Bearer 123456
+Authorization: Bearer {{authToken}}
 
 
 ### Lista 1 recado
@@ -50,7 +51,7 @@ DELETE {{baseUrl}}/recados/2/
 GET {{baseUrl}}/pessoas/
 ?limit=10
 &offset=10
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjcsImVtYWlsIjoibHVjYXNAZW1haWwuY29tIiwiaWF0IjoxNzQ3NjgwNzY0LCJleHAiOjE3NDc2ODQzNjQsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDozMDAifQ.muq7n5_8zP5C5lQQxQOTKj5MH1uJBD18dP9YTaighS4
+Authorization: Bearer {{authToken}}
 
 ### Lista 1 pessoa
 GET {{baseUrl}}/pessoas/6/
@@ -80,7 +81,8 @@ DELETE {{baseUrl}}/pessoa/2/
 
 
 #Auth
-###Lista todas as Pessoas
+###Login
+# @name authenticate
 POST {{baseUrl}}/auth/
 Content-Type: application/json
 
