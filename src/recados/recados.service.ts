@@ -1,5 +1,5 @@
 import { CreateRecadoDto } from './dto/create-recado.dto';
-import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { Recado } from './entities/recado.entity';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +8,7 @@ import { PessoasService } from 'src/pessoas/pessoas.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ConfigType } from '@nestjs/config';
 import recadosConfig from './recados.config';
+import { TokenPayLoadDto } from 'src/auth/dto/token-payload.dto';
 /*
 quando usar o async ? quando o método retornar uma promise, por exemplo?
 Operações com banco de dados, usando https/Apis externas, Delay, timeouts e etc
@@ -100,10 +101,13 @@ export class RecadosService {
     if (!recado) throw new NotFoundException('Recado nao encontrado');
     return recado;
   }
-  async create(createRecadoDto: CreateRecadoDto) {
-    const { deId, paraId } = createRecadoDto;
+  async create(
+    createRecadoDto: CreateRecadoDto,
+    tokenPayload: TokenPayLoadDto,
+  ) {
+    const { paraId } = createRecadoDto;
     //Encontrar a pessoa que esta criando o recado
-    const de = await this.pessoasService.findOne(deId);
+    const de = await this.pessoasService.findOne(tokenPayload.sub);
     //Encontrar a pessoa que esta recebendo o recado
     const para = await this.pessoasService.findOne(paraId);
 
@@ -121,15 +125,25 @@ export class RecadosService {
       ...recado,
       de: {
         id: recado.de.id,
+        nome: recado.de.nome,
       },
       para: {
         para: recado.para.id,
+        nome: recado.de.nome,
       },
     }; //retorna mostrando o JSON com os campos especificados
   }
 
-  async update(id: number, updateRecadoDto: UpdateRecadoDto) {
+  async update(
+    id: number,
+    updateRecadoDto: UpdateRecadoDto,
+    tokenPayload: TokenPayLoadDto,
+  ) {
     const recado = await this.findOne(id);
+
+    if (recado.de.id !== tokenPayload.sub) {
+      throw new ForbiddenException('Esse recado nao e seu');
+    }
 
     recado.texto = updateRecadoDto?.texto ?? recado.texto;
     recado.lido = updateRecadoDto?.lido ?? recado.lido;
@@ -137,13 +151,14 @@ export class RecadosService {
     await this.recadoRepository.save(recado);
     return recado;
   }
-  async remove(id: number) {
+  async remove(id: number, tokenPayload: TokenPayLoadDto) {
     //procura o id na tabela
-    const recado = await this.recadoRepository.findOneBy({
-      id,
-    });
-    // se nao achar o id, joga erro
-    if (!recado) return this.throwNotFundError();
+    const recado = await this.findOne(id);
+
+    if (recado.de.id !== tokenPayload.sub) {
+      throw new ForbiddenException('Esse recado nao e seu');
+    }
+
     //faz com que seja removido na tabela
     await this.recadoRepository.remove(recado);
     //retorna

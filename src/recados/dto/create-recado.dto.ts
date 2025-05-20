@@ -8,8 +8,5 @@ export class CreateRecadoDto {
   readonly texto: string;
 
   @IsNumber()
-  deId: number;
-
-  @IsNumber()
   paraId: number;
 }

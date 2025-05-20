@@ -7,11 +7,15 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { AuthTokenGuard } from 'src/auth/guards/auth.guard';
+import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
+import { TokenPayLoadDto } from 'src/auth/dto/token-payload.dto';
 /**
  CRUD
  Create -> Post -> criar um recado
@@ -47,18 +51,31 @@ export class RecadosController {
     Basta especificar dentro do decorator @Body, mas isso nao eh muito comum de 
     se utilizar
     */
+  @UseGuards(AuthTokenGuard)
   @Post()
-  create(@Body() createRecadoDto: CreateRecadoDto) {
-    return this.recadosService.create(createRecadoDto);
+  create(
+    @Body() createRecadoDto: CreateRecadoDto,
+    @TokenPayloadParam() tokenPayload: TokenPayLoadDto,
+  ) {
+    return this.recadosService.create(createRecadoDto, tokenPayload);
   }
 
+  @UseGuards(AuthTokenGuard)
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateRecadoDto: UpdateRecadoDto) {
-    return this.recadosService.update(id, updateRecadoDto);
+  update(
+    @Param('id') id: number,
+    @Body() updateRecadoDto: UpdateRecadoDto,
+    @TokenPayloadParam() tokenPayload: TokenPayLoadDto,
+  ) {
+    return this.recadosService.update(id, updateRecadoDto, tokenPayload);
   }
 
+  @UseGuards(AuthTokenGuard)
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.recadosService.remove(id);
+  remove(
+    @Param('id') id: number,
+    @TokenPayloadParam() tokenPayload: TokenPayLoadDto,
+  ) {
+    return this.recadosService.remove(id, tokenPayload);
   }
 }

@@ -53,7 +53,8 @@ export class PessoasController {
 
   @UseGuards(AuthTokenGuard)
   @Delete(':id')
-  remove(@Param('id') id: string,
+  remove(
+    @Param('id') id: string,
     @TokenPayloadParam() tokenPayload: TokenPayLoadDto,
   ) {
     return this.pessoasService.remove(+id, tokenPayload);
