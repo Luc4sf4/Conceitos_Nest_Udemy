@@ -37,7 +37,7 @@ export class AuthService {
       throw new UnauthorizedException('Senha invalida.');
     }
 
-    // Fazer o novo token e entregar para o usuario na resposta
+    // Fazer o novo token e entregar para o usuário na resposta
     const accessToken = await this.jwtService.signAsync(
       {
         sub: pessoa.id,
