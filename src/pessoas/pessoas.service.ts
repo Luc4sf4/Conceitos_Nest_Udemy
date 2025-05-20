@@ -1,3 +1,4 @@
+import { TokenPayLoadDto } from './../auth/dto/token-payload.dto';
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Pessoa } from './entities/pessoa.entity';
 import {
@@ -65,7 +66,11 @@ export class PessoasService {
     return pessoa;
   }
 
-  async update(id: number, updatePessoaDto: UpdatePessoaDto) {
+  async update(
+    id: number,
+    updatePessoaDto: UpdatePessoaDto,
+    tokenPayload: TokenPayLoadDto,
+  ) {
     const dadosPessoa = {
       nome: updatePessoaDto?.name,
     };
@@ -88,7 +93,7 @@ export class PessoasService {
     return this.pessoaRepository.save(pessoa);
   }
 
-  async remove(id: number) {
+  async remove(id: number, tokenPayload: TokenPayLoadDto) {
     const pessoa = await this.pessoaRepository.findOneBy({
       id,
     });

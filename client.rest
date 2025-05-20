@@ -55,7 +55,7 @@ Authorization: Bearer {{authToken}}
 
 ### Lista 1 pessoa
 GET {{baseUrl}}/pessoas/6/
-
+Authorization: Bearer {{authToken}}
 
 
 ### Cria uma pessoa
@@ -69,6 +69,7 @@ Content-Type: application/json
 }
 ### Atualiza uma pessoa
 PATCH  {{baseUrl}}/pessoas/4/
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
@@ -78,6 +79,7 @@ Content-Type: application/json
 
 ### Apaga uma pessoa
 DELETE {{baseUrl}}/pessoa/2/
+Authorization: Bearer {{authToken}}
 
 
 #Auth
