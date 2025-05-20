@@ -3,6 +3,7 @@ import { TokenPayLoadDto } from './../auth/dto/token-payload.dto';
 import { Pessoa } from './entities/pessoa.entity';
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   Scope,
@@ -90,6 +91,10 @@ export class PessoasService {
 
     if (!pessoa) throw new NotFoundException('Pessoa nao encontrada ');
 
+    if (pessoa.id !== tokenPayload.sub) {
+      throw new ForbiddenException('Voce nao e essa pessoa');
+    }
+
     return this.pessoaRepository.save(pessoa);
   }
 
@@ -99,6 +104,10 @@ export class PessoasService {
     });
 
     if (!pessoa) throw new NotFoundException('Pessoa nao encontrada ');
+
+    if (pessoa.id !== tokenPayload.sub) {
+      throw new ForbiddenException('Voce nao e essa pessoa');
+    }
 
     await this.pessoaRepository.remove(pessoa);
     return pessoa;
