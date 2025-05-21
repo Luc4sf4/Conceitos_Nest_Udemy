@@ -1,5 +1,11 @@
 import { CreateRecadoDto } from './dto/create-recado.dto';
-import { ForbiddenException, Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  Scope,
+} from '@nestjs/common';
 import { Recado } from './entities/recado.entity';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -40,9 +46,9 @@ export class RecadosService {
     private readonly recadoRepository: Repository<Recado>,
     private readonly pessoasService: PessoasService,
     @Inject(recadosConfig.KEY)
-    private readonly recadosConfiguratios: ConfigType<typeof recadosConfig>,
+    private readonly recadosConfigurations: ConfigType<typeof recadosConfig>,
   ) {
-    console.log(recadosConfiguratios);
+    console.log(recadosConfigurations);
   }
   throwNotFundError() {
     throw new NotFoundException('Recado nao encontrado');

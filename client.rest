@@ -2,6 +2,9 @@
 @baseUrl = http://localhost:3000
 @authToken = {{authenticate.response.body.accessToken}}
 
+@refreshToken = {{authenticate.response.body.refreshToken}}
+
+
 ### AppControllerGetHello
 
 ### tipo de método -> url -> recurso da URL
@@ -93,5 +96,14 @@ Content-Type: application/json
 {
     "email": "lucas@email.com",
     "password": "123456"
+}
+
+###Re-Autenticação
+# @name reAuthenticate
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+    "refreshToken": "{{refreshToken}}"
 }
 
