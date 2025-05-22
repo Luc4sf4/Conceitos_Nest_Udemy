@@ -16,9 +16,9 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { AuthTokenGuard } from 'src/auth/guards/auth.guard';
 import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
 import { TokenPayLoadDto } from 'src/auth/dto/token-payload.dto';
-import { RoutePolicyGuard } from 'src/auth/guards/route-policy.guard';
 import { SetRoutePolicy } from 'src/auth/decorators/set-route-policy.decorator';
 import { RoutePolicies } from 'src/auth/enum/route-policies.enum';
+import { AuthAndPolicyGuard } from 'src/auth/guards/auth-and-policy.guard';
 /**
  CRUD
  Create -> Post -> criar um recado
@@ -34,7 +34,6 @@ import { RoutePolicies } from 'src/auth/enum/route-policies.enum';
 //DTO - Data Transfer Object -> Objeto de transferência de dados
 //DTO - Objeto simples -> Em nest usado para:  Validar / transformar dados
 
-@UseGuards(RoutePolicyGuard)
 @Controller('recados') //decorator de classe
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
@@ -56,7 +55,8 @@ export class RecadosController {
     Basta especificar dentro do decorator @Body, mas isso nao eh muito comum de 
     se utilizar
     */
-  @UseGuards(AuthTokenGuard)
+  @SetRoutePolicy(RoutePolicies.createRecado)
+  @UseGuards(AuthAndPolicyGuard)
   @Post()
   create(
     @Body() createRecadoDto: CreateRecadoDto,
@@ -65,7 +65,8 @@ export class RecadosController {
     return this.recadosService.create(createRecadoDto, tokenPayload);
   }
 
-  @UseGuards(AuthTokenGuard)
+  @SetRoutePolicy(RoutePolicies.updateRecado)
+  @UseGuards(AuthAndPolicyGuard)
   @Patch(':id')
   update(
     @Param('id') id: number,
@@ -75,6 +76,8 @@ export class RecadosController {
     return this.recadosService.update(id, updateRecadoDto, tokenPayload);
   }
 
+  @SetRoutePolicy(RoutePolicies.deleteRecado)
+  @UseGuards(AuthAndPolicyGuard)
   @UseGuards(AuthTokenGuard)
   @Delete(':id')
   remove(
