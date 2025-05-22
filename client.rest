@@ -68,9 +68,10 @@ POST {{baseUrl}}/pessoas/
 Content-Type: application/json
 
 {
-    "email": "lucas@email.com",
+    "email": "lucas2@email.com",
     "senha": "123456",
-    "name": "Lucas"
+    "name": "Lucas",
+    "routePolicies": ["createRecado", "findOneRecado"]
 }
 ### Atualiza uma pessoa
 PATCH  {{baseUrl}}/pessoas/4/

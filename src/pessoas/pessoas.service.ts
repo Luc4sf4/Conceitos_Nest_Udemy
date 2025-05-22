@@ -36,6 +36,7 @@ export class PessoasService {
         nome: createPessoaDto.name,
         passwordHash,
         email: createPessoaDto.email,
+        routePolicies: createPessoaDto.routePolicies,
       };
       const pessoa = this.pessoaRepository.create(novaPessoa); //cria a pessoa
       await this.pessoaRepository.save(pessoa); //salva a pessoa no banco de dados
