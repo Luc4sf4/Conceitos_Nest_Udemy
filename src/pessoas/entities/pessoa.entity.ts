@@ -37,4 +37,7 @@ export class Pessoa {
   //Uma pessoa recebeu muitos recados
   @OneToMany(() => Recado, recado => recado.para)
   recadosRecebidos: Recado[];
+
+  @Column({ default: true })
+  active: boolean;
 }
