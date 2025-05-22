@@ -16,6 +16,9 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { AuthTokenGuard } from 'src/auth/guards/auth.guard';
 import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
 import { TokenPayLoadDto } from 'src/auth/dto/token-payload.dto';
+import { RoutePolicyGuard } from 'src/auth/guards/route-policy.guard';
+import { SetRoutePolicy } from 'src/auth/decorators/set-route-policy.decorator';
+import { RoutePolicies } from 'src/auth/enum/route-policies.enum';
 /**
  CRUD
  Create -> Post -> criar um recado
@@ -31,12 +34,14 @@ import { TokenPayLoadDto } from 'src/auth/dto/token-payload.dto';
 //DTO - Data Transfer Object -> Objeto de transferência de dados
 //DTO - Objeto simples -> Em nest usado para:  Validar / transformar dados
 
+@UseGuards(RoutePolicyGuard)
 @Controller('recados') //decorator de classe
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
 
   //@HttpCode(HttpStatus.NOT_FOUND) Decorator para mudar o código HTTP, podendo usar os números ou o Enum do HttpStatus
   @Get() //decorator de método
+  @SetRoutePolicy(RoutePolicies.findAllRecados)
   async findAll(@Query() paginationDto: PaginationDto) {
     const recado = await this.recadosService.findAll(paginationDto);
     return recado;
