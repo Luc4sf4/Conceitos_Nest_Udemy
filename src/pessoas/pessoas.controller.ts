@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { TokenPayLoadDto } from './../auth/dto/token-payload.dto';
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
@@ -10,6 +11,8 @@ import {
   Delete,
   UseGuards,
   Req,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { PessoasService } from './pessoas.service';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
@@ -18,6 +21,7 @@ import { AuthTokenGuard } from 'src/auth/guards/auth.guard';
 import { Request } from 'express';
 import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/auth/auth.constants';
 import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('pessoas')
 export class PessoasController {
@@ -58,5 +62,21 @@ export class PessoasController {
     @TokenPayloadParam() tokenPayload: TokenPayLoadDto,
   ) {
     return this.pessoasService.remove(+id, tokenPayload);
+  }
+
+  @UseGuards(AuthTokenGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('upload-picture')
+  uploadPicture(
+    @UploadedFile() file: Express.Multer.File,
+    @TokenPayloadParam() tokenPayload: TokenPayLoadDto,
+  ) {
+    return {
+      fieldname: file.fieldname,
+      originalname: file.originalname,
+      mimeType: file.mimetype,
+      buffer: {},
+      size: 23,
+    };
   }
 }
