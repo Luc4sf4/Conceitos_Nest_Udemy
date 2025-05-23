@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { TokenPayLoadDto } from './../auth/dto/token-payload.dto';
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -13,6 +14,9 @@ import {
   Req,
   UseInterceptors,
   UploadedFile,
+  ParseFilePipeBuilder,
+  HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import { PessoasService } from './pessoas.service';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
@@ -70,9 +74,25 @@ export class PessoasController {
   @UseInterceptors(FileInterceptor('file'))
   @Post('upload-picture')
   async uploadPicture(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /jpeg|jpg|png/g,
+        })
+        .addMaxSizeValidator({
+          maxSize: 10 * (1024 * 1024),
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
     @TokenPayloadParam() tokenPayload: TokenPayLoadDto,
   ) {
+    if (file.size > 1024) {
+      throw new BadRequestException('File too small');
+    }
+
     const fileExtension = path
       .extname(file.originalname)
       .toLowerCase()
