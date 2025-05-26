@@ -17,7 +17,7 @@ import { HashingService } from 'src/auth/hashing/hashing.service';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
-@Injectable({ scope: Scope.TRANSIENT })
+@Injectable({ scope: Scope.DEFAULT })
 export class PessoasService {
   private count = 0;
   constructor(

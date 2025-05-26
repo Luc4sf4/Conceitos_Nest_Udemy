@@ -1,27 +1,37 @@
-/* eslint-disable @typescript-eslint/require-await */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { HashingService } from 'src/auth/hashing/hashing.service';
+import { Repository } from 'typeorm';
+import { PessoasService } from './pessoas.service';
+import { Pessoa } from './entities/pessoa.entity';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+
 describe('PessoasService', () => {
+  let pessoaService: PessoasService;
+  let pessoaRepository: Repository<Pessoa>;
+  let hashingService: HashingService;
+
   beforeEach(async () => {
-    console.log('Isso sera executado antes de cada teste');
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        PessoasService,
+        {
+          provide: getRepositoryToken(Pessoa),
+          useValue: {},
+        },
+        {
+          provide: HashingService,
+          useValue: {},
+        },
+      ],
+    }).compile();
+    pessoaService = module.get<PessoasService>(PessoasService);
+    pessoaRepository = module.get<Repository<Pessoa>>(
+      getRepositoryToken(Pessoa),
+    );
+    hashingService = module.get<HashingService>(HashingService);
   });
-
-  //Caso - teste
-  it('deve somar num1 e num 2 resultar em 3', () => {
-    // configurar -- Arrange
-    const num1 = 1;
-    const num2 = 2;
-    // Fazer alguma ação -- Act
-    const result = num1 + num2;
-    //Conferir se essa ação foi esperada -- Assert
-    // === 3 -> toBe
-    expect(result).toBe(3);
+  it('pessoaService deve estar definido', () => {
+    expect(PessoasService).toBeDefined();
   });
-
-  //Outro caso - Teste
-  // test('if user can create profile', () => {});
-
-  // // todo describe deve ter teste dentro dele
-  // describe('bla bla bla ', () => {
-  //   //Caso - teste
-  //   it('abc', () => {});
-  // });
 });
