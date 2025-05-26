@@ -2,6 +2,7 @@ import { TokenPayLoadDto } from './../auth/dto/token-payload.dto';
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Pessoa } from './entities/pessoa.entity';
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
@@ -13,7 +14,9 @@ import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HashingService } from 'src/auth/hashing/hashing.service';
-
+import * as path from 'path';
+import * as fs from 'fs/promises';
+import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
 @Injectable({ scope: Scope.TRANSIENT })
 export class PessoasService {
   private count = 0;
@@ -111,5 +114,36 @@ export class PessoasService {
 
     await this.pessoaRepository.remove(pessoa);
     return pessoa;
+  }
+
+  async uploadPicture(
+    file: Express.Multer.File,
+    @TokenPayloadParam() tokenPayload: TokenPayLoadDto,
+  ) {
+    if (file.size > 1024) {
+      throw new BadRequestException('File too small');
+    }
+
+    const pessoa = await this.findOne(tokenPayload.sub);
+
+    const fileExtension = path
+      .extname(file.originalname)
+      .toLowerCase()
+      .substring(1);
+    const fileName = `${tokenPayload.sub}.${fileExtension}`;
+    const fileFullPath = path.resolve(process.cwd(), 'pictures', fileName);
+
+    await fs.writeFile(fileFullPath, file.buffer);
+
+    pessoa.picture = fileName;
+    await this.pessoaRepository.save(pessoa);
+
+    return {
+      fieldname: file.fieldname,
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      buffer: {},
+      size: file.size,
+    };
   }
 }

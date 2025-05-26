@@ -121,3 +121,6 @@ Content-Type: image/png
 
 < ./dev/images/man.png
 ------BoundaryDelimitadorHttp--
+
+### ver foto
+GET {{baseUrl}}/pictures/7.png

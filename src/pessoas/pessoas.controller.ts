@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { TokenPayLoadDto } from './../auth/dto/token-payload.dto';
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
@@ -16,7 +14,6 @@ import {
   UploadedFile,
   ParseFilePipeBuilder,
   HttpStatus,
-  BadRequestException,
 } from '@nestjs/common';
 import { PessoasService } from './pessoas.service';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
@@ -26,8 +23,6 @@ import { Request } from 'express';
 import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/auth/auth.constants';
 import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
 import { FileInterceptor } from '@nestjs/platform-express';
-import * as path from 'path';
-import * as fs from 'fs/promises';
 
 @Controller('pessoas')
 export class PessoasController {
@@ -89,25 +84,6 @@ export class PessoasController {
     file: Express.Multer.File,
     @TokenPayloadParam() tokenPayload: TokenPayLoadDto,
   ) {
-    if (file.size > 1024) {
-      throw new BadRequestException('File too small');
-    }
-
-    const fileExtension = path
-      .extname(file.originalname)
-      .toLowerCase()
-      .substring(1);
-    const fileName = `${tokenPayload.sub}.${fileExtension}`;
-    const fileFullPath = path.resolve(process.cwd(), 'pictures', fileName);
-
-    await fs.writeFile(fileFullPath, file.buffer);
-
-    return {
-      fieldname: file.fieldname,
-      originalname: file.originalname,
-      mimetype: file.mimetype,
-      buffer: {},
-      size: file.size,
-    };
+    return this.pessoasService.uploadPicture(file, tokenPayload);
   }
 }
