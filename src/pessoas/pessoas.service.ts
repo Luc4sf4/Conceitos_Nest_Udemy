@@ -57,16 +57,10 @@ export class PessoasService {
 
   async findOne(id: number) {
     this.count++;
-    console.log(`PessoaService ${this.count} - findOne`);
-
-    const pessoa = await this.pessoaRepository.findOne({
-      where: {
-        id,
-      },
+    const pessoa = await this.pessoaRepository.findOneBy({
+      id,
     });
-
-    if (!pessoa) throw new NotFoundException('Pessoa nao encontrada ');
-
+    if (!pessoa) throw new NotFoundException('Pessoa nao encontrada');
     return pessoa;
   }
 

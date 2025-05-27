@@ -8,7 +8,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { create } from 'node:domain';
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 
 describe('PessoasService', () => {
   let pessoaService: PessoasService;
@@ -24,6 +24,7 @@ describe('PessoasService', () => {
           useValue: {
             create: jest.fn(), //função que vai te dar informações do determinado método
             save: jest.fn(), //função que vai te dar informações do determinado método
+            findOneBy: jest.fn(),
           },
         },
         {
@@ -111,6 +112,36 @@ describe('PessoasService', () => {
 
       await expect(pessoaService.create({} as any)).rejects.toThrow(
         new Error('Erro genérico'),
+      );
+    });
+  });
+
+  describe('findOne', () => {
+    it('deve retornar uma pessoa se a pessoa for encontrada', async () => {
+      const pessoaId = 1;
+      const pessoaEncontrada = {
+        id: 1,
+        nome: 'Lucas',
+        email: 'lucas@email.com',
+        passwordHash: '123456',
+      };
+
+      jest
+        .spyOn(pessoaRepository, 'findOneBy')
+        .mockResolvedValue(pessoaEncontrada as any);
+
+      const result = await pessoaService.findOne(pessoaId);
+
+      expect(result).toEqual(pessoaEncontrada);
+    });
+
+    it('deve retornar uma pessoa se a pessoa for encontrada', async () => {
+      jest
+        .spyOn(pessoaRepository, 'findOneBy')
+        .mockResolvedValue(undefined as any);
+
+      await expect(pessoaService.findOne(1)).rejects.toThrow(
+        new NotFoundException('Pessoa nao encontrada'),
       );
     });
   });
