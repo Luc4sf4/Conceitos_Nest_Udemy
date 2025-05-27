@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { HashingService } from 'src/auth/hashing/hashing.service';
@@ -7,7 +8,6 @@ import { Pessoa } from './entities/pessoa.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
-import { create } from 'node:domain';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 
 describe('PessoasService', () => {
@@ -26,6 +26,7 @@ describe('PessoasService', () => {
             save: jest.fn(), //função que vai te dar informações do determinado método
             findOneBy: jest.fn(),
             find: jest.fn(),
+            preload: jest.fn(),
           },
         },
         {
@@ -168,6 +169,42 @@ describe('PessoasService', () => {
           id: 'desc',
         },
       });
+    });
+  });
+
+  describe('update', () => {
+    it('deve atualizar uma pessoa se for autorizado', async () => {
+      //Arrange
+      const pessoaId = 1;
+      const updatePessoaDto = { name: 'Joana', senha: '654321' };
+      const tokenPayload = { sub: pessoaId } as any;
+      const passwordHash = 'HASHDESENHA';
+      const updatedPessoa = { id: pessoaId, nome: 'Joana', passwordHash };
+
+      jest.spyOn(hashingService, 'hash').mockResolvedValueOnce(passwordHash);
+      jest
+        .spyOn(pessoaRepository, 'preload')
+        .mockResolvedValue(updatedPessoa as any);
+      jest
+        .spyOn(pessoaRepository, 'save')
+        .mockResolvedValue(updatedPessoa as any);
+
+      //Act
+      const result = await pessoasService.update(
+        pessoaId,
+        updatePessoaDto,
+        tokenPayload,
+      );
+
+      expect(result).toEqual(updatedPessoa);
+      // expect(hashingService.hash).toHaveBeenCalledWith(updatePessoaDto.senha);
+      expect(hashingService.hash).toHaveBeenCalledWith(updatePessoaDto.senha);
+      expect(pessoaRepository.preload).toHaveBeenCalledWith({
+        id: pessoaId,
+        nome: updatePessoaDto.name,
+        passwordHash,
+      });
+      expect(pessoaRepository.save).toHaveBeenCalledWith(updatedPessoa);
     });
   });
 });
