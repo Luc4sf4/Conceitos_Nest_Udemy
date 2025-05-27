@@ -11,7 +11,7 @@ import { create } from 'node:domain';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 
 describe('PessoasService', () => {
-  let pessoaService: PessoasService;
+  let pessoasService: PessoasService;
   let pessoaRepository: Repository<Pessoa>;
   let hashingService: HashingService;
 
@@ -25,6 +25,7 @@ describe('PessoasService', () => {
             create: jest.fn(), //função que vai te dar informações do determinado método
             save: jest.fn(), //função que vai te dar informações do determinado método
             findOneBy: jest.fn(),
+            find: jest.fn(),
           },
         },
         {
@@ -35,7 +36,7 @@ describe('PessoasService', () => {
         },
       ],
     }).compile();
-    pessoaService = module.get<PessoasService>(PessoasService);
+    pessoasService = module.get<PessoasService>(PessoasService);
     pessoaRepository = module.get<Repository<Pessoa>>(
       getRepositoryToken(Pessoa),
     );
@@ -70,7 +71,7 @@ describe('PessoasService', () => {
       jest.spyOn(pessoaRepository, 'create').mockReturnValue(novaPessoa as any);
 
       //Act
-      const result = await pessoaService.create(createpessoaDto);
+      const result = await pessoasService.create(createpessoaDto);
 
       //Assert
       // O método hashingService.hash foi chamado com o createPessoaDto.senha ?
@@ -99,18 +100,18 @@ describe('PessoasService', () => {
         code: '23505',
       });
 
-      await expect(pessoaService.create({} as any)).rejects.toThrow(
+      await expect(pessoasService.create({} as any)).rejects.toThrow(
         ConflictException,
       );
     });
 
-    it('deve lançar um ConflictException', async () => {
+    it('deve lançar um erro generico quando um erro for lancado', async () => {
       //
       jest
         .spyOn(pessoaRepository, 'save')
         .mockRejectedValue(new Error('Erro genérico'));
 
-      await expect(pessoaService.create({} as any)).rejects.toThrow(
+      await expect(pessoasService.create({} as any)).rejects.toThrow(
         new Error('Erro genérico'),
       );
     });
@@ -130,19 +131,43 @@ describe('PessoasService', () => {
         .spyOn(pessoaRepository, 'findOneBy')
         .mockResolvedValue(pessoaEncontrada as any);
 
-      const result = await pessoaService.findOne(pessoaId);
+      const result = await pessoasService.findOne(pessoaId);
 
       expect(result).toEqual(pessoaEncontrada);
     });
 
-    it('deve retornar uma pessoa se a pessoa for encontrada', async () => {
+    it('deve retornar uma pessoa se a pessoa nao for encontrada', async () => {
       jest
         .spyOn(pessoaRepository, 'findOneBy')
         .mockResolvedValue(undefined as any);
 
-      await expect(pessoaService.findOne(1)).rejects.toThrow(
+      await expect(pessoasService.findOne(1)).rejects.toThrow(
         new NotFoundException('Pessoa nao encontrada'),
       );
+    });
+  });
+
+  describe('findOne', () => {
+    it('deve retornar todas as pessoas encontradas', async () => {
+      const pessoasMock: Pessoa[] = [
+        {
+          id: 1,
+          nome: 'Lucas',
+          email: 'lucas@email.com',
+          passwordHash: '123456',
+        } as Pessoa,
+      ];
+
+      jest.spyOn(pessoaRepository, 'find').mockResolvedValue(pessoasMock);
+
+      const result = await pessoasService.findAll();
+
+      expect(result).toEqual(pessoasMock);
+      expect(pessoaRepository.find).toHaveBeenCalledWith({
+        order: {
+          id: 'desc',
+        },
+      });
     });
   });
 });

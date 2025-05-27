@@ -51,7 +51,11 @@ export class PessoasService {
     }
   }
   async findAll() {
-    const pessoas = await this.pessoaRepository.find();
+    const pessoas = await this.pessoaRepository.find({
+      order: {
+        id: 'desc',
+      },
+    });
     return pessoas;
   }
 
