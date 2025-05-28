@@ -120,7 +120,7 @@ export class PessoasService {
     file: Express.Multer.File,
     @TokenPayloadParam() tokenPayload: TokenPayLoadDto,
   ) {
-    if (file.size > 1024) {
+    if (file.size < 1024) {
       throw new BadRequestException('File too small');
     }
 
@@ -138,12 +138,6 @@ export class PessoasService {
     pessoa.picture = fileName;
     await this.pessoaRepository.save(pessoa);
 
-    return {
-      fieldname: file.fieldname,
-      originalname: file.originalname,
-      mimetype: file.mimetype,
-      buffer: {},
-      size: file.size,
-    };
+    return pessoa;
   }
 }
