@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { App } from 'supertest/types';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,6 +12,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'path';
 import appConfig from 'src/app/config/app.config';
+import * as request from 'supertest';
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
 
@@ -51,7 +53,32 @@ describe('AppController (e2e)', () => {
     await app.close();
   });
 
-  it('/ (GET)', () => {
-    //
+  describe('/pessoas (POST)', () => {
+    it('deve criar uma pessoa com sucesso', async () => {
+      const createPessoaDto = {
+        email: 'lucas@email.com',
+        senha: '123456',
+        name: 'Lucas',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/pessoas')
+        .send(createPessoaDto)
+        .expect(HttpStatus.CREATED);
+
+      // console.log(response.status);
+      console.log(response.body);
+
+      expect(response.body).toEqual({
+        email: createPessoaDto.email,
+        passwordHash: expect.any(String),
+        nome: createPessoaDto.name,
+        active: true,
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+        picture: '',
+        id: expect.any(Number),
+      });
+    });
   });
 });
