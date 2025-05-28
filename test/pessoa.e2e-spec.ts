@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication } from '@nestjs/common';
@@ -79,6 +80,47 @@ describe('AppController (e2e)', () => {
         picture: '',
         id: expect.any(Number),
       });
+    });
+
+    it('deve gerar um erro de e-mail ja existe', async () => {
+      const createPessoaDto = {
+        email: 'lucas@email.com',
+        senha: '123456',
+        name: 'Lucas',
+      };
+
+      await request(app.getHttpServer())
+        .post('/pessoas')
+        .send(createPessoaDto)
+        .expect(HttpStatus.CREATED);
+
+      const response = await request(app.getHttpServer())
+        .post('/pessoas')
+        .send(createPessoaDto)
+        .expect(HttpStatus.CONFLICT);
+
+      expect(response.body.message).toBe('email ja cadastrado');
+    });
+
+    it('deve gerar um erro de senha curta', async () => {
+      const createPessoaDto = {
+        email: 'lucas@email.com',
+        senha: '123',
+        name: 'Lucas',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/pessoas')
+        .send(createPessoaDto)
+        .expect(HttpStatus.BAD_REQUEST);
+
+      console.log(response.body.message);
+      expect(response.body.message).toEqual([
+        'senha must be longer than or equal to 5 characters',
+      ]);
+      expect(response.body.message).toContain(
+        'senha must be longer than or equal to 5 characters',
+      );
     });
   });
 });
