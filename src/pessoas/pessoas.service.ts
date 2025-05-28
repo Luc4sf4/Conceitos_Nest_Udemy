@@ -106,7 +106,7 @@ export class PessoasService {
       id,
     });
 
-    if (!pessoa) throw new NotFoundException('Pessoa nao encontrada ');
+    if (!pessoa) throw new NotFoundException('Pessoa nao encontrada');
 
     if (pessoa.id !== tokenPayload.sub) {
       throw new ForbiddenException('Voce nao e essa pessoa');

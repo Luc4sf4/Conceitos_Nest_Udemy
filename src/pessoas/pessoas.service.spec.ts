@@ -30,8 +30,10 @@ describe('PessoasService', () => {
             create: jest.fn(), //função que vai te dar informações do determinado método
             save: jest.fn(), //função que vai te dar informações do determinado método
             findOneBy: jest.fn(),
+            findOne: jest.fn(),
             find: jest.fn(),
             preload: jest.fn(),
+            remove: jest.fn(),
           },
         },
         {
@@ -211,34 +213,84 @@ describe('PessoasService', () => {
       });
       expect(pessoaRepository.save).toHaveBeenCalledWith(updatedPessoa);
     });
+    it('deve lançar um ForbiddenException se usuário nao autorizado', async () => {
+      //Arrange
+      const pessoaId = 1; // Usuário certo (ID 1)
+      const tokenPayload = { sub: 2 } as any; // Usuário diferente (ID 2)
+      const updatePessoaDto = { name: 'Jane Doe' };
+      const existingPessoa = { id: pessoaId, nome: 'John Doe' };
+      jest
+        .spyOn(pessoaRepository, 'preload')
+        .mockResolvedValue(existingPessoa as any);
+
+      await expect(
+        pessoasService.update(pessoaId, updatePessoaDto, tokenPayload),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('deve lançar um NotFoundException se usuário nao autorizado', async () => {
+      //Arrange
+      const pessoaId = 1;
+      const tokenPayload = { sub: pessoaId } as any;
+      const updatePessoaDto = { name: 'Jane Doe' };
+
+      //Nao estava aceitando null, tive que mudar pra undefined
+      jest.spyOn(pessoaRepository, 'preload').mockResolvedValue(undefined);
+
+      await expect(
+        pessoasService.update(pessoaId, updatePessoaDto, tokenPayload),
+      ).rejects.toThrow(NotFoundException);
+    });
   });
 
-  it('deve lançar um ForbiddenException se usuário nao autorizado', async () => {
-    //Arrange
-    const pessoaId = 1; // Usuário certo (ID 1)
-    const tokenPayload = { sub: 2 } as any; // Usuário diferente (ID 2)
-    const updatePessoaDto = { name: 'Jane Doe' };
-    const existingPessoa = { id: pessoaId, nome: 'John Doe' };
-    jest
-      .spyOn(pessoaRepository, 'preload')
-      .mockResolvedValue(existingPessoa as any);
+  describe('remove', () => {
+    it('deve remover uma pessoa se autorizado', async () => {
+      const pessoaId = 1;
+      const tokenPayload = { sub: pessoaId } as any;
+      const existingPessoa = { id: pessoaId, nome: 'John Doe' };
 
-    await expect(
-      pessoasService.update(pessoaId, updatePessoaDto, tokenPayload),
-    ).rejects.toThrow(ForbiddenException);
-  });
+      jest
+        .spyOn(pessoaRepository, 'findOneBy') // mocka certo
+        .mockResolvedValue(existingPessoa as any);
 
-  it('deve lançar um ForbiddenException se usuário nao autorizado', async () => {
-    //Arrange
-    const pessoaId = 1;
-    const tokenPayload = { sub: pessoaId } as any;
-    const updatePessoaDto = { name: 'Jane Doe' };
+      jest
+        .spyOn(pessoaRepository, 'remove')
+        .mockResolvedValue(existingPessoa as any);
 
-    //Nao estava aceitando null, tive que mudar pra undefined
-    jest.spyOn(pessoaRepository, 'preload').mockResolvedValue(undefined);
+      const result = await pessoasService.remove(pessoaId, tokenPayload);
 
-    await expect(
-      pessoasService.update(pessoaId, updatePessoaDto, tokenPayload),
-    ).rejects.toThrow(NotFoundException);
+      expect(pessoaRepository.findOneBy).toHaveBeenCalledWith({ id: pessoaId });
+      expect(pessoaRepository.remove).toHaveBeenCalledWith(existingPessoa);
+      expect(result).toEqual(existingPessoa);
+    });
+
+    it('deve lançar um ForbiddenException se usuário nao autorizado', async () => {
+      // Arrange
+      const pessoaId = 1; // ID da pessoa no banco
+      const tokenPayload = { sub: 2 } as any; // ID do usuário autenticado (diferente da pessoa)
+
+      const existingPessoa = { id: pessoaId, nome: 'John Doe' };
+
+      // Corrigido: mock do método correto (findOneBy)
+      jest
+        .spyOn(pessoaRepository, 'findOneBy')
+        .mockResolvedValue(existingPessoa as any);
+
+      // Act + Assert
+      await expect(
+        pessoasService.remove(pessoaId, tokenPayload),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('deve lançar um NotFoundException se pessoa nao encontrada', async () => {
+      const pessoaId = 1;
+      const tokenPayload = { sub: pessoaId } as any;
+
+      jest.spyOn(pessoaRepository, 'findOneBy').mockResolvedValue(null);
+
+      await expect(
+        pessoasService.remove(pessoaId, tokenPayload),
+      ).rejects.toThrow(NotFoundException);
+    });
   });
 });
