@@ -90,10 +90,12 @@ export class PessoasService {
       ...dadosPessoa,
     });
 
-    if (!pessoa) throw new NotFoundException('Pessoa nao encontrada ');
+    if (!pessoa) {
+      throw new NotFoundException('Pessoa não encontrada');
+    }
 
     if (pessoa.id !== tokenPayload.sub) {
-      throw new ForbiddenException('Voce nao e essa pessoa');
+      throw new ForbiddenException('Você não é essa pessoa.');
     }
 
     return this.pessoaRepository.save(pessoa);

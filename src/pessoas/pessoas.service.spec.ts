@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { HashingService } from 'src/auth/hashing/hashing.service';
 import { Repository } from 'typeorm';
 import { PessoasService } from './pessoas.service';
@@ -8,7 +9,11 @@ import { Pessoa } from './entities/pessoa.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 
 describe('PessoasService', () => {
   let pessoasService: PessoasService;
@@ -206,5 +211,34 @@ describe('PessoasService', () => {
       });
       expect(pessoaRepository.save).toHaveBeenCalledWith(updatedPessoa);
     });
+  });
+
+  it('deve lançar um ForbiddenException se usuário nao autorizado', async () => {
+    //Arrange
+    const pessoaId = 1; // Usuário certo (ID 1)
+    const tokenPayload = { sub: 2 } as any; // Usuário diferente (ID 2)
+    const updatePessoaDto = { name: 'Jane Doe' };
+    const existingPessoa = { id: pessoaId, nome: 'John Doe' };
+    jest
+      .spyOn(pessoaRepository, 'preload')
+      .mockResolvedValue(existingPessoa as any);
+
+    await expect(
+      pessoasService.update(pessoaId, updatePessoaDto, tokenPayload),
+    ).rejects.toThrow(ForbiddenException);
+  });
+
+  it('deve lançar um ForbiddenException se usuário nao autorizado', async () => {
+    //Arrange
+    const pessoaId = 1;
+    const tokenPayload = { sub: pessoaId } as any;
+    const updatePessoaDto = { name: 'Jane Doe' };
+
+    //Nao estava aceitando null, tive que mudar pra undefined
+    jest.spyOn(pessoaRepository, 'preload').mockResolvedValue(undefined);
+
+    await expect(
+      pessoasService.update(pessoaId, updatePessoaDto, tokenPayload),
+    ).rejects.toThrow(NotFoundException);
   });
 });
