@@ -24,13 +24,18 @@ export class PessoasService {
     @InjectRepository(Pessoa)
     private readonly pessoaRepository: Repository<Pessoa>,
     private readonly hashingService: HashingService,
-  ) {
-    this.count++;
-    console.log(`PessoaService foi iniciado ${this.count} vezes`);
-  }
+  ) {}
 
   async create(createPessoaDto: CreatePessoaDto) {
     try {
+      const existing = await this.pessoaRepository.findOne({
+        where: { email: createPessoaDto.email },
+      });
+
+      if (existing) {
+        throw new ConflictException('email ja cadastrado');
+      }
+
       const passwordHash = await this.hashingService.hash(
         createPessoaDto.senha,
       );

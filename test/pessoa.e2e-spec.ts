@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import { App } from 'supertest/types';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import globalConfig from 'src/global-config/global.config';
@@ -14,8 +15,36 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'path';
 import appConfig from 'src/app/config/app.config';
 import * as request from 'supertest';
+import { CreatePessoaDto } from 'src/pessoas/dto/create-pessoa.dto';
+
+const login = async (
+  app: INestApplication,
+  email: string,
+  password: string,
+) => {
+  const response = await request(app.getHttpServer())
+    .post('/auth')
+    .send({ email, password });
+
+  return response.body.accessToken;
+};
+
+const createUserAndLogin = async (app: INestApplication) => {
+  const name = 'Any User';
+  const email = 'antuser@email.com';
+  const senha = '123456';
+
+  await request(app.getHttpServer()).post('/pessoas').send({
+    name,
+    email,
+    senha,
+  });
+  return login(app, email, senha);
+};
+
 describe('AppController (e2e)', () => {
-  let app: INestApplication<App>;
+  let app: INestApplication;
+  let authToken: string;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -48,6 +77,8 @@ describe('AppController (e2e)', () => {
     appConfig(app);
 
     await app.init();
+
+    authToken = await createUserAndLogin(app);
   });
 
   afterEach(async () => {
@@ -56,7 +87,7 @@ describe('AppController (e2e)', () => {
 
   describe('/pessoas (POST)', () => {
     it('deve criar uma pessoa com sucesso', async () => {
-      const createPessoaDto = {
+      const createPessoaDto: CreatePessoaDto = {
         email: 'lucas@email.com',
         senha: '123456',
         name: 'Lucas',
@@ -68,7 +99,6 @@ describe('AppController (e2e)', () => {
         .expect(HttpStatus.CREATED);
 
       // console.log(response.status);
-      console.log(response.body);
 
       expect(response.body).toEqual({
         email: createPessoaDto.email,
@@ -83,7 +113,7 @@ describe('AppController (e2e)', () => {
     });
 
     it('deve gerar um erro de e-mail ja existe', async () => {
-      const createPessoaDto = {
+      const createPessoaDto: CreatePessoaDto = {
         email: 'lucas@email.com',
         senha: '123456',
         name: 'Lucas',
@@ -103,7 +133,7 @@ describe('AppController (e2e)', () => {
     });
 
     it('deve gerar um erro de senha curta', async () => {
-      const createPessoaDto = {
+      const createPessoaDto: CreatePessoaDto = {
         email: 'lucas@email.com',
         senha: '123',
         name: 'Lucas',
@@ -114,13 +144,42 @@ describe('AppController (e2e)', () => {
         .send(createPessoaDto)
         .expect(HttpStatus.BAD_REQUEST);
 
-      console.log(response.body.message);
       expect(response.body.message).toEqual([
         'senha must be longer than or equal to 5 characters',
       ]);
       expect(response.body.message).toContain(
         'senha must be longer than or equal to 5 characters',
       );
+    });
+  });
+  describe('/pessoas/:id (GET)', () => {
+    it('deve retornar a pessoa quando o usuário está logado', async () => {
+      const createPessoaDto: CreatePessoaDto = {
+        email: 'lucas@email.com',
+        senha: '123456',
+        name: 'Lucas',
+      };
+      // Criação da pessoa
+      const pessoaResponse = await request(app.getHttpServer())
+        .post('/pessoas')
+        .send(createPessoaDto)
+        .expect(HttpStatus.CREATED);
+
+      const response = await request(app.getHttpServer())
+        .get(`/pessoas/${pessoaResponse.body.id}`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(HttpStatus.OK);
+
+      expect(response.body).toEqual({
+        email: createPessoaDto.email,
+        passwordHash: expect.any(String),
+        nome: createPessoaDto.name,
+        active: true,
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+        picture: '',
+        id: expect.any(Number),
+      });
     });
   });
 });
