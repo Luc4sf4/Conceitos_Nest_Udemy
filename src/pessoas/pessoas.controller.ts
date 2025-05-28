@@ -1,5 +1,5 @@
 import { TokenPayLoadDto } from './../auth/dto/token-payload.dto';
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import {
   Controller,
   Get,
@@ -9,7 +9,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
   UseInterceptors,
   UploadedFile,
   ParseFilePipeBuilder,
@@ -20,7 +19,6 @@ import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 import { AuthTokenGuard } from 'src/auth/guards/auth.guard';
 import { Request } from 'express';
-import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/auth/auth.constants';
 import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -35,8 +33,7 @@ export class PessoasController {
 
   @UseGuards(AuthTokenGuard)
   @Get()
-  findAll(@Req() req: Request) {
-    console.log(req[REQUEST_TOKEN_PAYLOAD_KEY].sub);
+  findAll() {
     return this.pessoasService.findAll();
   }
 

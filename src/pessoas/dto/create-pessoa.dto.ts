@@ -11,13 +11,13 @@ export class CreatePessoaDto {
   @IsNotEmpty()
   @MinLength(3)
   @MaxLength(100)
-  readonly name?: string;
+  name?: string;
 
   @IsEmail()
-  readonly email?: string;
+  email?: string;
 
   @IsString()
   @IsNotEmpty()
   @MinLength(5)
-  readonly senha: string;
+  senha: string;
 }
