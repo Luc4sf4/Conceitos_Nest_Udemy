@@ -182,4 +182,77 @@ describe('AppController (e2e)', () => {
       });
     });
   });
+
+  describe('PATCH /pessoas/:id', () => {
+    it('deve atualizar uma pessoa', async () => {
+      const createResponse = await request(app.getHttpServer())
+        .post('/pessoas')
+        .send({
+          email: 'lucas@email.com',
+          name: 'Lucas',
+          senha: '123456',
+        })
+        .expect(HttpStatus.CREATED);
+
+      const personId = createResponse.body.id;
+
+      const authToken = await login(app, 'lucas@email.com', '123456');
+
+      const updateResponse = await request(app.getHttpServer())
+        .patch(`/pessoas/${personId}`)
+        .send({
+          name: 'Lucas Atualizado',
+        })
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(HttpStatus.OK);
+
+      expect(updateResponse.body).toEqual(
+        expect.objectContaining({
+          id: personId,
+          nome: 'Lucas Atualizado',
+        }),
+      );
+    });
+
+    it('deve retornar erro para pessoa não encontrada', async () => {
+      await request(app.getHttpServer())
+        .patch('/pessoas/9999') // ID fictício
+        .send({
+          name: 'Nome Atualizado',
+        })
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(HttpStatus.NOT_FOUND);
+    });
+  });
+
+  describe('DELETE /pessoas/:id', () => {
+    it('deve remover uma pessoa', async () => {
+      const createResponse = await request(app.getHttpServer())
+        .post('/pessoas')
+        .send({
+          email: 'lucas@email.com',
+          name: 'Lucas',
+          senha: '123456',
+        })
+        .expect(HttpStatus.CREATED);
+
+      const authToken = await login(app, 'lucas@email.com', '123456');
+
+      const personId = createResponse.body.id;
+
+      const response = await request(app.getHttpServer())
+        .delete(`/pessoas/${personId}`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(HttpStatus.OK);
+
+      expect(response.body.email).toBe('lucas@email.com');
+    });
+
+    it('deve retornar erro para pessoa não encontrada', async () => {
+      await request(app.getHttpServer())
+        .delete('/pessoas/9999') // ID fictício
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(HttpStatus.NOT_FOUND);
+    });
+  });
 });
